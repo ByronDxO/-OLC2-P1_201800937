@@ -73,9 +73,11 @@
                                 </font>   
                             </h1>
                         </center>
-                        
-                        <textarea name="editor" id="editor"></textarea>
-                        
+                        {{ if (eq .CODE_INPUT "") }}
+                            <textarea name="editor" id="editor"></textarea>
+                        {{ else }}
+                            <textarea name="editor" id="editor">{{ .CODE_INPUT }}</textarea>
+                        {{ end }}
                     </div>
                     <div class="col">
                         <center>
@@ -85,10 +87,10 @@
                                 </font>   
                             </h1>
                         </center>
-                        {{ if (eq .INTERPRETAR "") }}
+                        {{ if (eq .CODE_OUT "") }}
                             <textarea name="out_data" id="out"></textarea>
                         {{ else }}
-                            <textarea name="out_data" id="out">{{ .INTERPRETAR }}</textarea>
+                            <textarea name="out_data" id="out">{{ .CODE_OUT }}</textarea>
                         {{ end }}
                             
                     

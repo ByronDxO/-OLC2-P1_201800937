@@ -26,7 +26,7 @@ $ sudo apt install golang-go
 $ sudo snap install goland --classic
 
 ```
-
+----------------------
 
 # How to Install ANTLR
 
@@ -34,3 +34,37 @@ $ sudo snap install goland --classic
 sudo apt update
 sudo apt install antlr4
 ```
+Comando para ejecutar ANTLR
+```bash
+antlr4 -Dlanguage=Go -o Interprete/ANTLR/parser Interprete/ANTLR/ChemsLexer.g4
+antlr4 -Dlanguage=Go -o Interprete/ANTLR/parser Interprete/ANTLR/Chems.g4
+
+```
+
+
+----------------------
+
+# Fiber
+
+### Crear Proyecto
+```bash
+$ go mod init [nombre]
+--------------------
+-     Ejemplo      - 
+- go mod init OLC2 -
+--------------------
+```
+
+### Dependecias a instalar:
+```bash
+$ go get github.com/gofiber/fiber
+$ go get -u github.com/gofiber/fiber/v2
+$ go get -u github.com/gofiber/template
+```
+
+### Ejecutar Proyecto
+```bash
+$ go run app.go
+```
+
+
