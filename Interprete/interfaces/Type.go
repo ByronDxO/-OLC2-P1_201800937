@@ -3,10 +3,10 @@ package interfaces
 type TipoExpresion int
 
 const (
-	INTEGER TipoExpresion = iota
-	FLOAT
-	STRING
-	BOOLEAN
-	ARRAY
-	NULL
+	INTEGER TipoExpresion = iota 	// 0
+	FLOAT							// 1
+	STRING							// 2
+	BOOLEAN							// 3
+	ARRAY							// 4
+	NULL							// 5
 )

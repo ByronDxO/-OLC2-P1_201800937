@@ -43,9 +43,9 @@ expression returns [interfaces.Expresion p]
 
 
 exp_arit returns [interfaces.Expresion p]
-  : opIz = exp_arit op=('*'|'/') opDe = exp_arit            { $p = expresion.NewOperacion($opIz.p,$op.text,$opDe.p,false)}
-  | opIz = exp_arit op=('+'|'-') opDe = exp_arit            { $p = expresion.NewOperacion($opIz.p,$op.text,$opDe.p,false)}     
-  | opIz = exp_arit op=('<'|'<='|'>='|'>') opDe = exp_arit  { $p = expresion.NewOperacion($opIz.p,$op.text,$opDe.p,false)}     
+  : left = exp_arit op=('*'|'/') right = exp_arit            { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false)}
+  | left = exp_arit op=('+'|'-') right = exp_arit            { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false)}     
+  | left = exp_arit op=('<'|'<='|'>='|'>') right = exp_arit  { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false)}     
   | primitivo                                               { $p = $primitivo.p}
   | TK_PARA expression TK_PARC                              { $p = $expression.p}
 ;
@@ -59,6 +59,13 @@ primitivo returns[interfaces.Expresion p]
                 }
             $p = expresion.PRIMITIVO(num,interfaces.INTEGER)
        } 
+    | DOUBLE  {  
+                num,err := strconv.ParseFloat($DOUBLE.text, 64)
+                if err!= nil{
+                    fmt.Println(err)
+                }
+            $p = expresion.PRIMITIVO(num,interfaces.FLOAT)
+              }
     | STRING { 
       str:= $STRING.text[1:len($STRING.text)-1]
       $p = expresion.PRIMITIVO(str,interfaces.STRING)}

@@ -2,25 +2,28 @@ package expresion
 
 import (
 	"OLC2/Interprete/interfaces"
+	"OLC2/Interprete/ast"
 	"fmt"
 )
 
 type Aritmetica struct {
-	Op1      interfaces.Expresion
-	Operador string
-	Op2      interfaces.Expresion
-	Unario   bool
+	left      	interfaces.Expresion
+	Operator 	string
+	right      	interfaces.Expresion
+	Unario   	bool
 }
 
-func NewOperacion(Op1 interfaces.Expresion, Operador string, Op2 interfaces.Expresion, unario bool) Aritmetica {
+func NewOperacion(left interfaces.Expresion, Operator string, right interfaces.Expresion, unario bool) Aritmetica {
 
-	exp := Aritmetica{Op1, Operador, Op2, unario}
+	exp := Aritmetica{left, Operator, right, unario}
 	return exp
 }
 
-func (p Aritmetica) Interpretar(env interface{}) interfaces.Symbol {
-	suma_resta_dominante := [5][5]interfaces.TipoExpresion{
+func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Symbol {
+	
+	SUMA_RESTA_DOMINANTE := [5][5]interfaces.TipoExpresion{
 		//INTEGER			//FLOAT			   //STRING			  //BOOLEAN		   //NULL
+
 		//INTEGER
 		{interfaces.INTEGER, interfaces.FLOAT, interfaces.STRING, interfaces.NULL, interfaces.NULL},
 		//FLOAT
@@ -33,7 +36,7 @@ func (p Aritmetica) Interpretar(env interface{}) interfaces.Symbol {
 		{interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL},
 	}
 
-	multi_division_dominante := [5][5]interfaces.TipoExpresion{
+	MULT_DIV_DOMINANTE := [5][5]interfaces.TipoExpresion{
 		{interfaces.INTEGER, interfaces.FLOAT, interfaces.NULL, interfaces.NULL, interfaces.NULL},
 		{interfaces.FLOAT, interfaces.FLOAT, interfaces.NULL, interfaces.NULL, interfaces.NULL},
 		{interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL},
@@ -41,7 +44,7 @@ func (p Aritmetica) Interpretar(env interface{}) interfaces.Symbol {
 		{interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL},
 	}
 
-	relacional_dominante := [5][5]interfaces.TipoExpresion{
+	RELACIONAL_DOMINANTE := [5][5]interfaces.TipoExpresion{
 		{interfaces.INTEGER, interfaces.FLOAT, interfaces.NULL, interfaces.NULL, interfaces.NULL},
 		{interfaces.FLOAT, interfaces.FLOAT, interfaces.NULL, interfaces.NULL, interfaces.NULL},
 		{interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL},
@@ -49,36 +52,45 @@ func (p Aritmetica) Interpretar(env interface{}) interfaces.Symbol {
 		{interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL},
 	}
 
-	var retornoIzq interfaces.Symbol
-	var retornoDer interfaces.Symbol
+	var exp_left interfaces.Symbol
+	var exp_right interfaces.Symbol
 
 	if p.Unario == true {
-		retornoIzq = p.Op1.Interpretar(env)
+		exp_left = p.left.Interpretar(env, tree)
 	} else {
-		retornoIzq = p.Op1.Interpretar(env)
-		retornoDer = p.Op2.Interpretar(env)
+		exp_left = p.left.Interpretar(env, tree)
+		exp_right = p.right.Interpretar(env, tree)
 	}
 
 	var resultado interface{}
 
 	var dominante interfaces.TipoExpresion
 
-	switch p.Operador {
+	switch p.Operator {
 	case "+":
 		{
-
-			dominante = suma_resta_dominante[retornoIzq.Tipo][retornoDer.Tipo]
+			
+			
+			dominante = SUMA_RESTA_DOMINANTE[exp_left.Tipo][exp_right.Tipo]
 
 			if dominante == interfaces.INTEGER {
 
-				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: retornoIzq.Valor.(int) + retornoDer.Valor.(int)}
+				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: exp_left.Valor.(int) + exp_right.Valor.(int)}
 
 			} else if dominante == interfaces.FLOAT {
-				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: retornoIzq.Valor.(float64) + retornoDer.Valor.(float64)}
+				if exp_left.Tipo == interfaces.INTEGER{
+					return interfaces.Symbol{Id: "", Tipo: dominante, Valor: float64(exp_left.Valor.(int)) + exp_right.Valor.(float64)}
+
+				}else if exp_right.Tipo == interfaces.INTEGER {
+					return interfaces.Symbol{Id: "", Tipo: dominante, Valor: exp_left.Valor.(float64) + float64(exp_right.Valor.(int))}
+
+				}
+
+				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: exp_left.Valor.(float64) + exp_right.Valor.(float64)}
 
 			} else if dominante == interfaces.STRING {
-				r1 := fmt.Sprintf("%v", retornoIzq.Valor)
-				r2 := fmt.Sprintf("%v", retornoDer.Valor)
+				r1 := fmt.Sprintf("%v", exp_left.Valor)
+				r2 := fmt.Sprintf("%v", exp_right.Valor)
 
 				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: r1 + r2}
 			} else {
@@ -89,14 +101,14 @@ func (p Aritmetica) Interpretar(env interface{}) interfaces.Symbol {
 
 	case "-":
 		{
-			dominante = suma_resta_dominante[retornoIzq.Tipo][retornoDer.Tipo]
+			dominante = SUMA_RESTA_DOMINANTE[exp_left.Tipo][exp_right.Tipo]
 
 			if dominante == interfaces.INTEGER {
 
-				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: retornoIzq.Valor.(int) - retornoDer.Valor.(int)}
+				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: exp_left.Valor.(int) - exp_right.Valor.(int)}
 
 			} else if dominante == interfaces.FLOAT {
-				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: retornoIzq.Valor.(float64) - retornoDer.Valor.(float64)}
+				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: exp_left.Valor.(float64) - exp_right.Valor.(float64)}
 
 			} else {
 				fmt.Print("ERROR: No es posible restar")
@@ -105,13 +117,13 @@ func (p Aritmetica) Interpretar(env interface{}) interfaces.Symbol {
 
 	case "*":
 		{
-			dominante = multi_division_dominante[retornoIzq.Tipo][retornoDer.Tipo]
+			dominante = MULT_DIV_DOMINANTE[exp_left.Tipo][exp_right.Tipo]
 
 			if dominante == interfaces.INTEGER {
-				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: retornoIzq.Valor.(int) * retornoDer.Valor.(int)}
+				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: exp_left.Valor.(int) * exp_right.Valor.(int)}
 
 			} else if dominante == interfaces.FLOAT {
-				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: retornoIzq.Valor.(float64) * retornoDer.Valor.(float64)}
+				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: exp_left.Valor.(float64) * exp_right.Valor.(float64)}
 
 			} else {
 				fmt.Print("ERROR: No es posible Multiplicar")
@@ -121,13 +133,13 @@ func (p Aritmetica) Interpretar(env interface{}) interfaces.Symbol {
 
 	case "/":
 		{
-			dominante = multi_division_dominante[retornoIzq.Tipo][retornoDer.Tipo]
+			dominante = MULT_DIV_DOMINANTE[exp_left.Tipo][exp_right.Tipo]
 
 			if dominante == interfaces.INTEGER {
-				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: retornoIzq.Valor.(int) / retornoDer.Valor.(int)}
+				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: exp_left.Valor.(int) / exp_right.Valor.(int)}
 
 			} else if dominante == interfaces.FLOAT {
-				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: retornoIzq.Valor.(float64) / retornoDer.Valor.(float64)}
+				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: exp_left.Valor.(float64) / exp_right.Valor.(float64)}
 
 			} else {
 				fmt.Print("ERROR: No es posible Dividir")
@@ -137,14 +149,14 @@ func (p Aritmetica) Interpretar(env interface{}) interfaces.Symbol {
 
 	case "<":
 		{
-			dominante = relacional_dominante[retornoIzq.Tipo][retornoDer.Tipo]
+			dominante = RELACIONAL_DOMINANTE[exp_left.Tipo][exp_right.Tipo]
 
 			if dominante == interfaces.INTEGER {
 
-				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: retornoIzq.Valor.(int) < retornoDer.Valor.(int)}
+				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: exp_left.Valor.(int) < exp_right.Valor.(int)}
 
 			} else if dominante == interfaces.FLOAT {
-				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: retornoIzq.Valor.(float64) < retornoDer.Valor.(float64)}
+				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: exp_left.Valor.(float64) < exp_right.Valor.(float64)}
 
 			} else {
 				fmt.Print("ERROR: No es posible comparar <")
@@ -153,14 +165,14 @@ func (p Aritmetica) Interpretar(env interface{}) interfaces.Symbol {
 
 	case ">":
 		{
-			dominante = relacional_dominante[retornoIzq.Tipo][retornoDer.Tipo]
+			dominante = RELACIONAL_DOMINANTE[exp_left.Tipo][exp_right.Tipo]
 
 			if dominante == interfaces.INTEGER {
 
-				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: retornoIzq.Valor.(int) > retornoDer.Valor.(int)}
+				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: exp_left.Valor.(int) > exp_right.Valor.(int)}
 
 			} else if dominante == interfaces.FLOAT {
-				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: retornoIzq.Valor.(float64) > retornoDer.Valor.(float64)}
+				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: exp_left.Valor.(float64) > exp_right.Valor.(float64)}
 
 			} else {
 				fmt.Print("ERROR: No es posible comparar <")
@@ -169,14 +181,14 @@ func (p Aritmetica) Interpretar(env interface{}) interfaces.Symbol {
 
 	case "<=":
 		{
-			dominante = relacional_dominante[retornoIzq.Tipo][retornoDer.Tipo]
+			dominante = RELACIONAL_DOMINANTE[exp_left.Tipo][exp_right.Tipo]
 
 			if dominante == interfaces.INTEGER {
 
-				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: retornoIzq.Valor.(int) <= retornoDer.Valor.(int)}
+				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: exp_left.Valor.(int) <= exp_right.Valor.(int)}
 
 			} else if dominante == interfaces.FLOAT {
-				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: retornoIzq.Valor.(float64) <= retornoDer.Valor.(float64)}
+				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: exp_left.Valor.(float64) <= exp_right.Valor.(float64)}
 
 			} else {
 				fmt.Print("ERROR: No es posible comparar <")
@@ -185,14 +197,14 @@ func (p Aritmetica) Interpretar(env interface{}) interfaces.Symbol {
 
 	case ">=":
 		{
-			dominante = relacional_dominante[retornoIzq.Tipo][retornoDer.Tipo]
+			dominante = RELACIONAL_DOMINANTE[exp_left.Tipo][exp_right.Tipo]
 
 			if dominante == interfaces.INTEGER {
 
-				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: retornoIzq.Valor.(int) >= retornoDer.Valor.(int)}
+				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: exp_left.Valor.(int) >= exp_right.Valor.(int)}
 
 			} else if dominante == interfaces.FLOAT {
-				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: retornoIzq.Valor.(float64) >= retornoDer.Valor.(float64)}
+				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: exp_left.Valor.(float64) >= exp_right.Valor.(float64)}
 
 			} else {
 				fmt.Print("ERROR: No es posible comparar <")

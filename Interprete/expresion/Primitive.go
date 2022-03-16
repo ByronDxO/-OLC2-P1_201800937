@@ -3,6 +3,7 @@ package expresion
 import (
 
 	"OLC2/Interprete/interfaces"
+	"OLC2/Interprete/ast"
 )
 
 
@@ -11,7 +12,7 @@ type Primitivo struct {
 	Tipo interfaces.TipoExpresion
 }
 
-func (p Primitivo) Interpretar(env interface{}) interfaces.Symbol {
+func (p Primitivo) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Symbol {
 	
 	return interfaces.Symbol{
 		Id: "",

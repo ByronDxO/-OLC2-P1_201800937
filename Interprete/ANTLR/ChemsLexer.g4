@@ -10,7 +10,10 @@ P_STRING:   'string';
 // P_WHILE:    'while';
 
 NUMBER: [0-9]+;
+DOUBLE: [0-9]+'.'[0-9]+;
+CHAR:   '\''~["]'\'';
 STRING: '"'~["]*'"';
+BOOLEAN: ('true'|'false');
 ID: ([a-zA-Z_])[a-zA-Z0-9_]*;
 
 TK_PUNTO:        '.';
@@ -34,10 +37,9 @@ TK_CORA:         '[';
 TK_CORC:         ']';
 
 
-WHITESPACE: [ \\\r\n\t]+ -> skip;
+WHITESPACE: [ \r\n\t]+ -> skip;
 
 fragment
 ESC_SEQ
     :   '\\' ('\\'|'@'|'['|']'|'.'|'#'|'+'|'-'|'!'|':'|' ')
     ;
-

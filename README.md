@@ -36,8 +36,8 @@ sudo apt install antlr4
 ```
 Comando para ejecutar ANTLR
 ```bash
-antlr4 -Dlanguage=Go -o Interprete/ANTLR/parser Interprete/ANTLR/ChemsLexer.g4
-antlr4 -Dlanguage=Go -o Interprete/ANTLR/parser Interprete/ANTLR/Chems.g4
+antlr4 -Dlanguage=Go -o parser ChemsLexer.g4
+antlr4 -Dlanguage=Go -o parser Chems.g4
 
 ```
 
