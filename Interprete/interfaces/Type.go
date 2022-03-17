@@ -9,4 +9,5 @@ const (
 	BOOLEAN							// 3
 	ARRAY							// 4
 	NULL							// 5
+	EXCEPTION 						// 6
 )

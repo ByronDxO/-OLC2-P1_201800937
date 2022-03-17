@@ -33,7 +33,8 @@ instrucciones returns [*arrayList.List l]
 ;
 
 instruccion returns [interfaces.Instruction instr]
-  : R_PRINTLN TK_PARA expression TK_PARC TK_PUNTOCOMA { $instr =  instruction.PRINTLN($expression.p)}
+  : R_PRINTLN TK_PARA expression TK_PARC TK_PUNTOCOMA                 { $instr =  instruction.PRINTLN($expression.p, "-1") }
+  | R_PRINTLN TK_PARA STRING TK_COMA expression TK_PARC TK_PUNTOCOMA  { $instr =  instruction.PRINTLN($expression.p, $STRING.text[1:len($STRING.text)-1]) }
 ;
 
 expression returns [interfaces.Expresion p]
@@ -43,11 +44,24 @@ expression returns [interfaces.Expresion p]
 
 
 exp_arit returns [interfaces.Expresion p]
-  : left = exp_arit op=('*'|'/') right = exp_arit            { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false)}
-  | left = exp_arit op=('+'|'-') right = exp_arit            { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false)}     
-  | left = exp_arit op=('<'|'<='|'>='|'>') right = exp_arit  { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false)}     
-  | primitivo                                               { $p = $primitivo.p}
-  | TK_PARA expression TK_PARC                              { $p = $expression.p}
+  : left = exp_arit op=('*'|'/') right = exp_arit                                                                                                               { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false, "-1", "-1") }
+  | TK_PARA left = exp_arit tipo_left=('as f64'|'as i64') TK_PARC op=('*'|'/') right = exp_arit                                                                 { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false, $tipo_left.text, "-1") }
+  | left = exp_arit op=('*'|'/') TK_PARA right = exp_arit tipo_right=('as f64'|'as i64') TK_PARC                                                                { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false, "-1", $tipo_right.text) }
+  | TK_PARA left = exp_arit tipo_left=('as f64'|'as i64') TK_PARC op=('*'|'/') TK_PARA right = exp_arit tipo_right=('as f64'|'as i64') TK_PARC                  { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false, $tipo_left.text, $tipo_right.text) }
+  
+  | left = exp_arit op=('+'|'-') right = exp_arit                                                                                                               { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false, "-1", "-1") }   
+  | TK_PARA left = exp_arit tipo_left=('as f64'|'as i64') TK_PARC op=('+'|'-') right = exp_arit                                                                 { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false, $tipo_left.text, "-1") }
+  | left = exp_arit op=('+'|'-') TK_PARA right = exp_arit tipo_right=('as f64'|'as i64') TK_PARC                                                                { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false, "-1", $tipo_right.text) }
+  | TK_PARA left = exp_arit tipo_left=('as f64'|'as i64') TK_PARC op=('+'|'-') TK_PARA right = exp_arit tipo_right=('as f64'|'as i64') TK_PARC                  { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false, $tipo_left.text, $tipo_right.text) }
+  
+  | left = exp_arit op=('<'|'<='|'>='|'>'|'!=') right = exp_arit                                                                                                { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false, "-1", "-1") }      
+  | left = exp_arit op=('<'|'<='|'>='|'>'|'!=') right = exp_arit                                                                                                { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false, "-1", "-1") }   
+  | TK_PARA left = exp_arit tipo_left=('as f64'|'as i64') TK_PARC op=('<'|'<='|'>='|'>'|'!=') right = exp_arit                                                  { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false, $tipo_left.text, "-1") }
+  | left = exp_arit op=('<'|'<='|'>='|'>'|'!=') TK_PARA right = exp_arit tipo_right=('as f64'|'as i64') TK_PARC                                                 { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false, "-1", $tipo_right.text) }
+  | TK_PARA left = exp_arit tipo_left=('as f64'|'as i64') TK_PARC op=('<'|'<='|'>='|'>'|'!=') TK_PARA right = exp_arit tipo_right=('as f64'|'as i64') TK_PARC   { $p = expresion.NewOperacion($left.p,$op.text,$right.p,false, $tipo_left.text, $tipo_right.text) }
+  
+  | primitivo                                                                                                                                                   { $p = $primitivo.p}
+  | TK_PARA expression TK_PARC                                                                                                                                  { $p = $expression.p}
 ;
 
 

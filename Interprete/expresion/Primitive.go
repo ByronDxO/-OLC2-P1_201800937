@@ -1,7 +1,7 @@
 package expresion
 
 import (
-
+	"fmt"
 	"OLC2/Interprete/interfaces"
 	"OLC2/Interprete/ast"
 )
@@ -24,7 +24,7 @@ func (p Primitivo) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Symb
 
 
 func PRIMITIVO(val interface{}, tipo interfaces.TipoExpresion) Primitivo {
-
+	fmt.Println(val)
 	expression := Primitivo{val, tipo}
 	return expression
 

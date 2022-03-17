@@ -108,12 +108,23 @@ func (this *TreeShapeListener) ExitStart(ctx *parser.StartContext) {
 	}
 
 
-	fmt.Println("SALIDA AS")
+	fmt.Println("SALIDA")
 	for _, s := range tree.GetCode().ToArray() {
 		_salida += fmt.Sprintf("%v", s)
 	}
 	fmt.Println(_salida)
 	fmt.Println("----------")
+
+	fmt.Println("EXCEPTION")
+	var OutException string
+	OutException = ""
+	for _, s := range tree.GetException().ToArray() {
+		OutException += fmt.Sprintf("%v", s)
+	}
+	fmt.Println(OutException)
+	fmt.Println("----------")
+
+
 	CODE_OUT_ = _salida
 }
 

@@ -11,46 +11,19 @@ type Aritmetica struct {
 	Operator 	string
 	right      	interfaces.Expresion
 	Unario   	bool
+	type_left   string
+	type_right  string
 }
 
-func NewOperacion(left interfaces.Expresion, Operator string, right interfaces.Expresion, unario bool) Aritmetica {
+func NewOperacion(left interfaces.Expresion, Operator string, right interfaces.Expresion, unario bool, type_left string, type_right string) Aritmetica {
 
-	exp := Aritmetica{left, Operator, right, unario}
+	exp := Aritmetica{left, Operator, right, unario, type_left, type_right}
 	return exp
 }
 
 func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Symbol {
 	
-	SUMA_RESTA_DOMINANTE := [5][5]interfaces.TipoExpresion{
-		//INTEGER			//FLOAT			   //STRING			  //BOOLEAN		   //NULL
 
-		//INTEGER
-		{interfaces.INTEGER, interfaces.FLOAT, interfaces.STRING, interfaces.NULL, interfaces.NULL},
-		//FLOAT
-		{interfaces.FLOAT, interfaces.FLOAT, interfaces.STRING, interfaces.NULL, interfaces.NULL},
-		//STRING
-		{interfaces.STRING, interfaces.STRING, interfaces.STRING, interfaces.STRING, interfaces.NULL},
-		//BOOLEAN
-		{interfaces.NULL, interfaces.NULL, interfaces.STRING, interfaces.NULL, interfaces.NULL},
-		//NULL
-		{interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL},
-	}
-
-	MULT_DIV_DOMINANTE := [5][5]interfaces.TipoExpresion{
-		{interfaces.INTEGER, interfaces.FLOAT, interfaces.NULL, interfaces.NULL, interfaces.NULL},
-		{interfaces.FLOAT, interfaces.FLOAT, interfaces.NULL, interfaces.NULL, interfaces.NULL},
-		{interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL},
-		{interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL},
-		{interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL},
-	}
-
-	RELACIONAL_DOMINANTE := [5][5]interfaces.TipoExpresion{
-		{interfaces.INTEGER, interfaces.FLOAT, interfaces.NULL, interfaces.NULL, interfaces.NULL},
-		{interfaces.FLOAT, interfaces.FLOAT, interfaces.NULL, interfaces.NULL, interfaces.NULL},
-		{interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL},
-		{interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL},
-		{interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL, interfaces.NULL},
-	}
 
 	var exp_left interfaces.Symbol
 	var exp_right interfaces.Symbol
@@ -64,150 +37,355 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 	var resultado interface{}
 
-	var dominante interfaces.TipoExpresion
 
 	switch p.Operator {
 	case "+":
 		{
 			
+
+			/* ************************************************************** INTEGER ************************************************************** */
+			if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as i64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(exp_left.Valor.(int) + int(exp_right.Valor.(float64)))}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as i64"){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(int(exp_left.Valor.(float64)) + exp_right.Valor.(int))}
+
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(exp_left.Valor.(int) + exp_right.Valor.(int))}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(int(exp_left.Valor.(float64)) + int(exp_right.Valor.(float64)))}
 			
-			dominante = SUMA_RESTA_DOMINANTE[exp_left.Tipo][exp_right.Tipo]
+			/* ************************************************************** FLOAT ************************************************************** */
+			}else if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as f64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(float64(exp_left.Valor.(int)) + exp_right.Valor.(float64))}
 
-			if dominante == interfaces.INTEGER {
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as f64"){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(exp_left.Valor.(float64) + float64(exp_right.Valor.(int)))}
 
-				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: exp_left.Valor.(int) + exp_right.Valor.(int)}
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(float64(exp_left.Valor.(int)) + float64(exp_right.Valor.(int)))}
 
-			} else if dominante == interfaces.FLOAT {
-				if exp_left.Tipo == interfaces.INTEGER{
-					return interfaces.Symbol{Id: "", Tipo: dominante, Valor: float64(exp_left.Valor.(int)) + exp_right.Valor.(float64)}
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(exp_left.Valor.(float64) + exp_right.Valor.(float64))}
 
-				}else if exp_right.Tipo == interfaces.INTEGER {
-					return interfaces.Symbol{Id: "", Tipo: dominante, Valor: exp_left.Valor.(float64) + float64(exp_right.Valor.(int))}
-
-				}
-
-				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: exp_left.Valor.(float64) + exp_right.Valor.(float64)}
-
-			} else if dominante == interfaces.STRING {
+			
+			/* ************************************************************** STRING ************************************************************** */
+			} else if (exp_left.Tipo == interfaces.STRING && exp_right.Tipo == interfaces.STRING) {
 				r1 := fmt.Sprintf("%v", exp_left.Valor)
 				r2 := fmt.Sprintf("%v", exp_right.Valor)
 
-				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: r1 + r2}
-			} else {
-				fmt.Print("ERROR: No es posible sumar")
+				return interfaces.Symbol{Id: "", Tipo: interfaces.STRING, Valor: r1 + r2}
+
+			}else {
+				excep := ast.NewException("Semantico","No es posible Sumar.")
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible Sumar."})
+				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
+
 			}
 
 		}
 
 	case "-":
 		{
-			dominante = SUMA_RESTA_DOMINANTE[exp_left.Tipo][exp_right.Tipo]
+			/* ************************************************************** INTEGER ************************************************************** */
+			if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as i64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(exp_left.Valor.(int) - int(exp_right.Valor.(float64)))}
 
-			if dominante == interfaces.INTEGER {
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as i64"){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(int(exp_left.Valor.(float64)) - exp_right.Valor.(int))}
 
-				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: exp_left.Valor.(int) - exp_right.Valor.(int)}
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(exp_left.Valor.(int) - exp_right.Valor.(int))}
 
-			} else if dominante == interfaces.FLOAT {
-				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: exp_left.Valor.(float64) - exp_right.Valor.(float64)}
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(int(exp_left.Valor.(float64)) - int(exp_right.Valor.(float64)))}
+			
+			/* ************************************************************** FLOAT ************************************************************** */
+			}else if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as f64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(float64(exp_left.Valor.(int)) - exp_right.Valor.(float64))}
 
-			} else {
-				fmt.Print("ERROR: No es posible restar")
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as f64"){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(exp_left.Valor.(float64) - float64(exp_right.Valor.(int)))}
+
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(float64(exp_left.Valor.(int)) - float64(exp_right.Valor.(int)))}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(exp_left.Valor.(float64) - exp_right.Valor.(float64))}
+
+			}else {
+				
+				excep := ast.NewException("Semantico","No es posible Restar.")
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible Restar."})
+				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
+
 			}
+			
 		}
-
 	case "*":
 		{
-			dominante = MULT_DIV_DOMINANTE[exp_left.Tipo][exp_right.Tipo]
+			/* ************************************************************** INTEGER ************************************************************** */
+			if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as i64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(exp_left.Valor.(int) * int(exp_right.Valor.(float64)))}
 
-			if dominante == interfaces.INTEGER {
-				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: exp_left.Valor.(int) * exp_right.Valor.(int)}
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as i64"){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(int(exp_left.Valor.(float64)) * exp_right.Valor.(int))}
 
-			} else if dominante == interfaces.FLOAT {
-				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: exp_left.Valor.(float64) * exp_right.Valor.(float64)}
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(exp_left.Valor.(int) * exp_right.Valor.(int))}
 
-			} else {
-				fmt.Print("ERROR: No es posible Multiplicar")
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(int(exp_left.Valor.(float64)) * int(exp_right.Valor.(float64)))}
+			
+			/* ************************************************************** FLOAT ************************************************************** */
+			}else if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as f64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(float64(exp_left.Valor.(int)) * exp_right.Valor.(float64))}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as f64"){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(exp_left.Valor.(float64) * float64(exp_right.Valor.(int)))}
+
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(float64(exp_left.Valor.(int)) * float64(exp_right.Valor.(int)))}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(exp_left.Valor.(float64) * exp_right.Valor.(float64))}
+
+			}else {
+				
+				excep := ast.NewException("Semantico","No es posible Multiplicar.")
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible Multiplicar."})
+				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
+
 			}
 
 		}
 
 	case "/":
 		{
-			dominante = MULT_DIV_DOMINANTE[exp_left.Tipo][exp_right.Tipo]
+			/* ************************************************************** INTEGER ************************************************************** */
+			if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as i64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(exp_left.Valor.(int) / int(exp_right.Valor.(float64)))}
 
-			if dominante == interfaces.INTEGER {
-				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: exp_left.Valor.(int) / exp_right.Valor.(int)}
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as i64"){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(int(exp_left.Valor.(float64)) / exp_right.Valor.(int))}
 
-			} else if dominante == interfaces.FLOAT {
-				return interfaces.Symbol{Id: "", Tipo: dominante, Valor: exp_left.Valor.(float64) / exp_right.Valor.(float64)}
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(exp_left.Valor.(int) / exp_right.Valor.(int))}
 
-			} else {
-				fmt.Print("ERROR: No es posible Dividir")
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(int(exp_left.Valor.(float64)) / int(exp_right.Valor.(float64)))}
+			
+			/* ************************************************************** FLOAT ************************************************************** */
+			}else if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as f64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(float64(exp_left.Valor.(int)) / exp_right.Valor.(float64))}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as f64"){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(exp_left.Valor.(float64) / float64(exp_right.Valor.(int)))}
+
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(float64(exp_left.Valor.(int)) / float64(exp_right.Valor.(int)))}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(exp_left.Valor.(float64) / exp_right.Valor.(float64))}
+
+			}else {
+				
+				excep := ast.NewException("Semantico","No es posible Dividir.")
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible Dividir."})
+				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
+
 			}
 
 		}
 
 	case "<":
 		{
-			dominante = RELACIONAL_DOMINANTE[exp_left.Tipo][exp_right.Tipo]
+			auxType := interfaces.BOOLEAN
+			/* ************************************************************** INTEGER ************************************************************** */
+			if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as i64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(int) < int(exp_right.Valor.(float64))}
 
-			if dominante == interfaces.INTEGER {
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as i64"){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: int(exp_left.Valor.(float64)) < exp_right.Valor.(int)}
 
-				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: exp_left.Valor.(int) < exp_right.Valor.(int)}
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(int) < exp_right.Valor.(int)}
 
-			} else if dominante == interfaces.FLOAT {
-				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: exp_left.Valor.(float64) < exp_right.Valor.(float64)}
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: int(exp_left.Valor.(float64)) < int(exp_right.Valor.(float64))}
+			
+			/* ************************************************************** FLOAT ************************************************************** */
+			}else if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as f64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: float64(exp_left.Valor.(int)) < exp_right.Valor.(float64)}
 
-			} else {
-				fmt.Print("ERROR: No es posible comparar <")
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as f64"){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(float64) < float64(exp_right.Valor.(int))}
+
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: float64(exp_left.Valor.(int)) < float64(exp_right.Valor.(int))}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(float64) < exp_right.Valor.(float64)}
+
+			}else {
+				
+				excep := ast.NewException("Semantico","No es posible comparar <.")
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar <."})
+				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
+
 			}
 		}
 
 	case ">":
 		{
-			dominante = RELACIONAL_DOMINANTE[exp_left.Tipo][exp_right.Tipo]
+			auxType := interfaces.BOOLEAN
+			/* ************************************************************** INTEGER ************************************************************** */
+			if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as i64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(int) > int(exp_right.Valor.(float64))}
 
-			if dominante == interfaces.INTEGER {
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as i64"){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: int(exp_left.Valor.(float64)) > exp_right.Valor.(int)}
 
-				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: exp_left.Valor.(int) > exp_right.Valor.(int)}
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(int) > exp_right.Valor.(int)}
 
-			} else if dominante == interfaces.FLOAT {
-				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: exp_left.Valor.(float64) > exp_right.Valor.(float64)}
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: int(exp_left.Valor.(float64)) > int(exp_right.Valor.(float64))}
+			
+			/* ************************************************************** FLOAT ************************************************************** */
+			}else if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as f64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: float64(exp_left.Valor.(int)) > exp_right.Valor.(float64)}
 
-			} else {
-				fmt.Print("ERROR: No es posible comparar <")
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as f64"){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(float64) > float64(exp_right.Valor.(int))}
+
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: float64(exp_left.Valor.(int)) > float64(exp_right.Valor.(int))}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(float64) > exp_right.Valor.(float64)}
+
+			}else {
+				
+				excep := ast.NewException("Semantico","No es posible comparar >.")
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar >."})
+				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
+
 			}
 		}
 
 	case "<=":
 		{
-			dominante = RELACIONAL_DOMINANTE[exp_left.Tipo][exp_right.Tipo]
+			auxType := interfaces.BOOLEAN
+			/* ************************************************************** INTEGER ************************************************************** */
+			if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as i64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(int) <= int(exp_right.Valor.(float64))}
 
-			if dominante == interfaces.INTEGER {
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as i64"){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: int(exp_left.Valor.(float64)) <= exp_right.Valor.(int)}
 
-				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: exp_left.Valor.(int) <= exp_right.Valor.(int)}
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(int) <= exp_right.Valor.(int)}
 
-			} else if dominante == interfaces.FLOAT {
-				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: exp_left.Valor.(float64) <= exp_right.Valor.(float64)}
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: int(exp_left.Valor.(float64)) <= int(exp_right.Valor.(float64))}
+			
+			/* ************************************************************** FLOAT ************************************************************** */
+			}else if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as f64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: float64(exp_left.Valor.(int)) <= exp_right.Valor.(float64)}
 
-			} else {
-				fmt.Print("ERROR: No es posible comparar <")
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as f64"){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(float64) <= float64(exp_right.Valor.(int))}
+
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: float64(exp_left.Valor.(int)) <= float64(exp_right.Valor.(int))}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(float64) <= exp_right.Valor.(float64)}
+
+			}else {
+				
+				excep := ast.NewException("Semantico","No es posible comparar <=.")
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar <=."})
+				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
+
 			}
 		}
 
 	case ">=":
 		{
-			dominante = RELACIONAL_DOMINANTE[exp_left.Tipo][exp_right.Tipo]
+			auxType := interfaces.BOOLEAN
+			/* ************************************************************** INTEGER ************************************************************** */
+			if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as i64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(int) >= int(exp_right.Valor.(float64))}
 
-			if dominante == interfaces.INTEGER {
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as i64"){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: int(exp_left.Valor.(float64)) >= exp_right.Valor.(int)}
 
-				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: exp_left.Valor.(int) >= exp_right.Valor.(int)}
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(int) >= exp_right.Valor.(int)}
 
-			} else if dominante == interfaces.FLOAT {
-				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: exp_left.Valor.(float64) >= exp_right.Valor.(float64)}
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: int(exp_left.Valor.(float64)) >= int(exp_right.Valor.(float64))}
+			
+			/* ************************************************************** FLOAT ************************************************************** */
+			}else if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as f64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: float64(exp_left.Valor.(int)) >= exp_right.Valor.(float64)}
 
-			} else {
-				fmt.Print("ERROR: No es posible comparar <")
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as f64"){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(float64) >= float64(exp_right.Valor.(int))}
+
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: float64(exp_left.Valor.(int)) >= float64(exp_right.Valor.(int))}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(float64) >= exp_right.Valor.(float64)}
+
+			}else {
+				
+				excep := ast.NewException("Semantico","No es posible comparar >=.")
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar >=."})
+				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
+
+			}
+		}
+	
+	case "!=":
+		{
+			auxType := interfaces.BOOLEAN
+			/* ************************************************************** INTEGER ************************************************************** */
+			if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as i64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(int) != int(exp_right.Valor.(float64))}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as i64"){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: int(exp_left.Valor.(float64)) != exp_right.Valor.(int)}
+
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(int) != exp_right.Valor.(int)}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: int(exp_left.Valor.(float64)) != int(exp_right.Valor.(float64))}
+			
+			/* ************************************************************** FLOAT ************************************************************** */
+			}else if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as f64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: float64(exp_left.Valor.(int)) != exp_right.Valor.(float64)}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as f64"){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(float64) != float64(exp_right.Valor.(int))}
+
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: float64(exp_left.Valor.(int)) != float64(exp_right.Valor.(int))}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(float64) != exp_right.Valor.(float64)}
+
+			}else {
+				
+				excep := ast.NewException("Semantico","No es posible comparar >=.")
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar >=."})
+				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
+
 			}
 		}
 	}

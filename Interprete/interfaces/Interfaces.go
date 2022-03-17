@@ -10,6 +10,12 @@ type Symbol struct {
 	Valor interface{}
 }
 
+type Exception struct {
+	Tipo 		string
+	Descripcion string
+}
+
+
 type Expresion interface {
 	Interpretar(env interface{}, tree *ast.Arbol) Symbol
 }
