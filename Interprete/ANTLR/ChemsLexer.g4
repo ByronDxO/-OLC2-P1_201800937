@@ -34,6 +34,7 @@ TK_MAYOR:        '>';
 TK_MENOR:        '<';
 TK_MULT:         '*';
 TK_DIV:          '/';
+TK_MODULO:       '%';
 TK_MAS:          '+';
 TK_MENOS:        '-';
 TK_PARA:         '(';
