@@ -77,15 +77,19 @@ primitivo returns[interfaces.Expresion p]
                 }
             $p = expresion.PRIMITIVO(num,interfaces.INTEGER)
        } 
-    | DOUBLE  {  
+    |DOUBLE  {  
                 num,err := strconv.ParseFloat($DOUBLE.text, 64)
                 if err!= nil{
                     fmt.Println(err)
                 }
             $p = expresion.PRIMITIVO(num,interfaces.FLOAT)
               }
-    | STRING { 
-      str:= $STRING.text[1:len($STRING.text)-1]
-      $p = expresion.PRIMITIVO(str,interfaces.STRING)}
-    
+    |STRING { 
+              str:= $STRING.text[1:len($STRING.text)-1]
+              $p = expresion.PRIMITIVO(str,interfaces.STRING)}
+            
+    |BOOLEAN { 
+              // str:= $BOOLEAN.text[1:len($BOOLEAN.text)-1]
+              $p = expresion.PRIMITIVO($BOOLEAN.text,interfaces.BOOLEAN)
+            }
 ;
