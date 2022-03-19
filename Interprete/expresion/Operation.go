@@ -5,6 +5,7 @@ import (
 	"OLC2/Interprete/ast"
 	"fmt"
 	"math"
+	"strconv"
 )
 
 type Aritmetica struct {
@@ -89,40 +90,69 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 	case "-":
 		{
-			/* ************************************************************** INTEGER ************************************************************** */
-			if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as i64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
-				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(exp_left.Valor.(int) - int(exp_right.Valor.(float64)))}
 
-			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as i64"){
-				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(int(exp_left.Valor.(float64)) - exp_right.Valor.(int))}
-
-			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as i64" || p.type_right == "-1")){
-				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(exp_left.Valor.(int) - exp_right.Valor.(int))}
-
-			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
-				return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(int(exp_left.Valor.(float64)) - int(exp_right.Valor.(float64)))}
 			
-			/* ************************************************************** FLOAT ************************************************************** */
-			}else if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as f64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
-				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(float64(exp_left.Valor.(int)) - exp_right.Valor.(float64))}
-
-			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as f64"){
-				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(exp_left.Valor.(float64) - float64(exp_right.Valor.(int)))}
-
-			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as f64" || p.type_right == "-1")){
-				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(float64(exp_left.Valor.(int)) - float64(exp_right.Valor.(int)))}
-
-			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
-				return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(exp_left.Valor.(float64) - exp_right.Valor.(float64))}
-
-			}else {
+			if p.Unario {
 				
-				excep := ast.NewException("Semantico","No es posible Restar.")
-				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible Restar."})
-				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
+				if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as i64" || p.type_left == "-1")) { 
+					return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int((-1)*(exp_left.Valor.(int)))}
+
+				}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64")) {
+					return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int((-1)*(exp_left.Valor.(int)))}
+
+				}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) {
+					return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64((-1.0)*(exp_left.Valor.(float64)))}
+					
+				}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as f64")) {
+					return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64((-1.0)*(exp_left.Valor.(float64)))}
+				
+				}else {
+				
+					excep := ast.NewException("Semantico","No es posible Unario.")
+					tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible Unario."})
+					return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
+
+				}
+
+				
+
+			}else{
+						/* ************************************************************** INTEGER ************************************************************** */
+				if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as i64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+					return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(exp_left.Valor.(int) - int(exp_right.Valor.(float64)))}
+
+				}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as i64"){
+					return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(int(exp_left.Valor.(float64)) - exp_right.Valor.(int))}
+
+				}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as i64" || p.type_right == "-1")){
+					return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(exp_left.Valor.(int) - exp_right.Valor.(int))}
+
+				}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+					return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: int(int(exp_left.Valor.(float64)) - int(exp_right.Valor.(float64)))}
+				
+				/* ************************************************************** FLOAT ************************************************************** */
+				}else if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as f64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+					return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(float64(exp_left.Valor.(int)) - exp_right.Valor.(float64))}
+
+				}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as f64"){
+					return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(exp_left.Valor.(float64) - float64(exp_right.Valor.(int)))}
+
+				}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as f64" || p.type_right == "-1")){
+					return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(float64(exp_left.Valor.(int)) - float64(exp_right.Valor.(int)))}
+
+				}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+					return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64(exp_left.Valor.(float64) - exp_right.Valor.(float64))}
+
+				}else {
+					
+					excep := ast.NewException("Semantico","No es posible Restar.")
+					tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible Restar."})
+					return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
+
+				}
 
 			}
-			
+					
 		}
 	case "*":
 		{
@@ -230,8 +260,8 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 			}else {
 				
-				excep := ast.NewException("Semantico","No es posible Restar.")
-				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible Restar."})
+				excep := ast.NewException("Semantico","No es posible el Modulo %.")
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible el Modulo %."})
 				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 
 			}
@@ -242,7 +272,7 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 			auxType := interfaces.BOOLEAN
 			/* ************************************************************** INTEGER ************************************************************** */
 			if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as i64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
-				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(int) < int(exp_right.Valor.(float64))}
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: bool(exp_left.Valor.(int) < int(exp_right.Valor.(float64)))}
 
 			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as i64"){
 				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: int(exp_left.Valor.(float64)) < exp_right.Valor.(int)}
@@ -420,13 +450,80 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 			}else {
 				
-				excep := ast.NewException("Semantico","No es posible comparar >=.")
-				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar >=."})
+				excep := ast.NewException("Semantico","No es posible comparar !=.")
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar !=."})
 				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 
 			}
 		}
+
+	case "&&":
+		{
+			// auxType := interfaces.BOOLEAN
+			/* ************************************************************** INTEGER ************************************************************** */
+			if exp_left.Tipo == interfaces.BOOLEAN && exp_right.Tipo == interfaces.BOOLEAN {
+				exp1,_ := strconv.ParseBool(fmt.Sprintf("%v", exp_left.Valor))
+				exp2,_ := strconv.ParseBool(fmt.Sprintf("%v", exp_right.Valor))
+				
+				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: exp1 && exp2 }
+
+		
+			}else {
+				
+				excep := ast.NewException("Semantico","No es posible comparar &&.")
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar &&."})
+				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
+
+			}
+		}
+
+	case "||":
+		{
+			// auxType := interfaces.BOOLEAN
+			/* ************************************************************** INTEGER ************************************************************** */
+			if exp_left.Tipo == interfaces.BOOLEAN && exp_right.Tipo == interfaces.BOOLEAN {
+				exp1,_ := strconv.ParseBool(fmt.Sprintf("%v", exp_left.Valor))
+				exp2,_ := strconv.ParseBool(fmt.Sprintf("%v", exp_right.Valor))
+				
+				return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: exp1 || exp2 }
+
+		
+			}else {
+				
+				excep := ast.NewException("Semantico","No es posible comparar ||.")
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar ||."})
+				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
+
+			}
+		}
+
+	case "!":
+		{
+			if p.Unario {
+				if exp_left.Tipo == interfaces.BOOLEAN {
+					exp1,_ := strconv.ParseBool(fmt.Sprintf("%v", exp_left.Valor))
+					return interfaces.Symbol{Id: "", Tipo: interfaces.BOOLEAN, Valor: !exp1 }
+	
+			
+				}else {
+					
+					excep := ast.NewException("Semantico","No es posible comparar !.")
+					tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar !."})
+					return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
+	
+				}
+			}
+
+			excep := ast.NewException("Semantico","No es posible, unario incorrecto en !.")
+			tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible, unario incorrecto en !"})
+			return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
+
+			
+		}
+
 	}
+
+	
 
 	return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: resultado}
 }

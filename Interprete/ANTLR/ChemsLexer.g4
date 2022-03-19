@@ -43,6 +43,9 @@ TK_LLAVEA:       '{';
 TK_LLAVEC:       '}';
 TK_CORA:         '[';
 TK_CORC:         ']';
+TK_AND:          '&&';
+TK_OR:           '||';
+TK_NOT:          '!';
 
 
 WHITESPACE: [ \r\n\t]+ -> skip;
