@@ -16,12 +16,12 @@ func NewEnvironment(anterior interface{}) Environment {
 	return env
 }
 
-func (env Environment) AddSymbol(id string, value interfaces.Symbol, tipo interfaces.TipoExpresion) {
+func (env Environment) AddSymbol(id string, value interfaces.Symbol, tipo interfaces.TipoExpresion, isMut bool) {
 	if variable, ok := env.variable[id]; ok {
 		fmt.Println("La variable " + variable.Id + " ya existe")
 		return
 	}
-	env.variable[id] = interfaces.Symbol{Id: id, Tipo: tipo, Valor: value}
+	env.variable[id] = interfaces.Symbol{Id: id, Tipo: tipo, Valor: value, IsMut: isMut}
 }
 
 func (env Environment) GetSymbol(id string) interfaces.Symbol {

@@ -40,12 +40,17 @@ instruccion returns [interfaces.Instruction instr]
   | instr_asignacion                                                  { $instr = $instr_asignacion.instr } 
 ;
 
-/******************************** [DECLARACION][ASIGNACION][VARIABLE] ********************************/
+/******************************** [DECLARACION][VARIABLE] ********************************/
 
 instr_declaracion returns [interfaces.Instruction instr]
-  : R_LET R_MUT ID TK_IGUAL expression TK_PUNTOCOMA                           { $instr = variable.NewDeclaration($ID.text,interfaces.NULL,$expression.p,false,false)   }
-  | R_LET R_MUT ID TK_DOSPUNTOS instr_tipo TK_IGUAL expression TK_PUNTOCOMA   { $instr = variable.NewDeclaration($ID.text,$instr_tipo.tipo_exp,$expression.p,false,false)   }
+  : R_LET R_MUT ID TK_IGUAL expression TK_PUNTOCOMA                           { $instr = variable.NewDeclaration($ID.text, interfaces.NULL,      $expression.p, true, false, false)   }
+  | R_LET R_MUT ID TK_DOSPUNTOS instr_tipo TK_IGUAL expression TK_PUNTOCOMA   { $instr = variable.NewDeclaration($ID.text, $instr_tipo.tipo_exp, $expression.p, true, false, false)   }
+  | R_LET ID TK_IGUAL expression TK_PUNTOCOMA                                 { $instr = variable.NewDeclaration($ID.text, interfaces.NULL,      $expression.p, false, false, false)   }
+  | R_LET ID TK_DOSPUNTOS instr_tipo TK_IGUAL expression TK_PUNTOCOMA         { $instr = variable.NewDeclaration($ID.text, $instr_tipo.tipo_exp, $expression.p, false, false, false)   }
+
 ;
+
+/******************************** [ASIGNACION][VARIABLE] ********************************/
 
 instr_asignacion returns [interfaces.Instruction instr]
   : ID TK_IGUAL expression TK_PUNTOCOMA { $instr = variable.NewAssignment($ID.text,$expression.p) }

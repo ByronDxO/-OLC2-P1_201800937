@@ -7,23 +7,28 @@ import (
 	"OLC2/Interprete/interfaces"
 	"OLC2/Interprete/environment"
 	"OLC2/Interprete/ast"
+	"fmt"
 )
 
 type Declaration struct {
 	Id 			string
 	Tipo 		interfaces.TipoExpresion
 	Expresion 	interfaces.Expresion
+	IsMut		bool
 	IsArray 	bool
 	IsStruct 	bool
 }
 
-func NewDeclaration(id string, tipo interfaces.TipoExpresion, val interfaces.Expresion, isArray bool, isStruct bool) Declaration {
-	instr := Declaration{id, tipo, val, isArray, isStruct}
+func NewDeclaration(id string, tipo interfaces.TipoExpresion, val interfaces.Expresion, isMut bool, isArray bool, isStruct bool) Declaration {
+	instr := Declaration{id, tipo, val, isMut, isArray, isStruct}
 	return instr
 }
 
 
 func (p Declaration) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
+
+	/* ERROR */
+	var value string = ""
 
 	/* Buscar si el id ya existe */
 	symbol := env.(environment.Environment).GetSymbol(p.Id)
@@ -40,7 +45,7 @@ func (p Declaration) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 
 	
 	if (result.Tipo == p.Tipo || p.Tipo == interfaces.NULL) {
-		env.(environment.Environment).AddSymbol(p.Id, result, result.Tipo)
+		env.(environment.Environment).AddSymbol(p.Id, result, result.Tipo, p.IsMut)
 	
 	/*}else if p.IsArray {
 		env.(environment.Environment).AddSymbol(p.Id, result, interfaces.ARRAY)
@@ -50,6 +55,14 @@ func (p Declaration) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 	}else {
 		excep := ast.NewException("Semantico","Tipo incorrecto en Declaracion.")
 		tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "Tipo incorrecto en Declaracion."})
+		
+		eTipo := excep.Tipo
+		eDesc := excep.Descripcion
+		value += fmt.Sprintf("%v", eTipo)
+		value += " - "
+		value += fmt.Sprintf("%v", eDesc)
+		value += "\n"
+		tree.AddCode(value)
 		return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 	}
 
