@@ -17,6 +17,15 @@ type ChemsListener interface {
 	// EnterInstruccion is called when entering the instruccion production.
 	EnterInstruccion(c *InstruccionContext)
 
+	// EnterInstr_declaracion is called when entering the instr_declaracion production.
+	EnterInstr_declaracion(c *Instr_declaracionContext)
+
+	// EnterInstr_asignacion is called when entering the instr_asignacion production.
+	EnterInstr_asignacion(c *Instr_asignacionContext)
+
+	// EnterInstr_tipo is called when entering the instr_tipo production.
+	EnterInstr_tipo(c *Instr_tipoContext)
+
 	// EnterExpression is called when entering the expression production.
 	EnterExpression(c *ExpressionContext)
 
@@ -34,6 +43,15 @@ type ChemsListener interface {
 
 	// ExitInstruccion is called when exiting the instruccion production.
 	ExitInstruccion(c *InstruccionContext)
+
+	// ExitInstr_declaracion is called when exiting the instr_declaracion production.
+	ExitInstr_declaracion(c *Instr_declaracionContext)
+
+	// ExitInstr_asignacion is called when exiting the instr_asignacion production.
+	ExitInstr_asignacion(c *Instr_asignacionContext)
+
+	// ExitInstr_tipo is called when exiting the instr_tipo production.
+	ExitInstr_tipo(c *Instr_tipoContext)
 
 	// ExitExpression is called when exiting the expression production.
 	ExitExpression(c *ExpressionContext)

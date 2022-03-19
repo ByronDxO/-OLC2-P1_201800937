@@ -6,16 +6,17 @@ import (
 )
 
 type Environment struct {
-	father   interface{}
+	anterior   interface{}
 	variable map[string]interfaces.Symbol
+	// structs  map[string]interfaces.Symbol
 }
 
-func NewEnvironment(father interface{}) Environment {
-	env := Environment{father, make(map[string]interfaces.Symbol)}
+func NewEnvironment(anterior interface{}) Environment {
+	env := Environment{anterior, make(map[string]interfaces.Symbol)}
 	return env
 }
 
-func (env Environment) SaveVariable(id string, value interfaces.Symbol, tipo interfaces.TipoExpresion) {
+func (env Environment) AddSymbol(id string, value interfaces.Symbol, tipo interfaces.TipoExpresion) {
 	if variable, ok := env.variable[id]; ok {
 		fmt.Println("La variable " + variable.Id + " ya existe")
 		return
@@ -23,7 +24,7 @@ func (env Environment) SaveVariable(id string, value interfaces.Symbol, tipo int
 	env.variable[id] = interfaces.Symbol{Id: id, Tipo: tipo, Valor: value}
 }
 
-func (env Environment) GetVariable(id string) interfaces.Symbol {
+func (env Environment) GetSymbol(id string) interfaces.Symbol {
 
 	var tmpEnv Environment
 	tmpEnv = env
@@ -33,10 +34,10 @@ func (env Environment) GetVariable(id string) interfaces.Symbol {
 			return variable
 		}
 
-		if tmpEnv.father == nil {
+		if tmpEnv.anterior == nil {
 			break
 		} else {
-			tmpEnv = tmpEnv.father.(Environment)
+			tmpEnv = tmpEnv.anterior.(Environment)
 		}
 	}
 
@@ -44,7 +45,7 @@ func (env Environment) GetVariable(id string) interfaces.Symbol {
 	return interfaces.Symbol{Id: "", Tipo: interfaces.NULL, Valor: interfaces.Symbol{Id: "", Tipo: interfaces.NULL, Valor: 0}}
 }
 
-func (env Environment) AlterVariable(id string, value interfaces.Symbol) interfaces.Symbol {
+func (env Environment) SetSymbol(id string, value interfaces.Symbol) interfaces.Symbol {
 
 	var tmpEnv Environment
 	tmpEnv = env
@@ -55,10 +56,10 @@ func (env Environment) AlterVariable(id string, value interfaces.Symbol) interfa
 			return variable
 		}
 
-		if tmpEnv.father == nil {
+		if tmpEnv.anterior == nil {
 			break
 		} else {
-			tmpEnv = tmpEnv.father.(Environment)
+			tmpEnv = tmpEnv.anterior.(Environment)
 		}
 	}
 

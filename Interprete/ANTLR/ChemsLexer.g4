@@ -5,9 +5,13 @@ lexer grammar ChemsLexer;
 
 R_PRINTLN:      'println!';
 P_NUMBER:       'number';
-P_STRING:       'string';
 R_AS_DOUBLE:    'as f64';
 R_AS_INTEGER:   'as i64';
+R_LET:          'let';
+R_MUT:          'mut';
+R_INT:          'i64';
+R_FLOAT:        'f64';
+R_STRING:     'String';
 
 // P_IF:       'if';
 // P_WHILE:    'while';
@@ -25,7 +29,7 @@ ID: ([a-zA-Z_])[a-zA-Z0-9_]*;
 TK_PUNTO:        '.';
 TK_PUNTOCOMA:    ';';
 TK_COMA:         ',';
-// TK_DIFERENTE:    '!';
+TK_DOSPUNTOS:    ':';
 TK_IGUAL:        '=';
 TK_MAYORIGUAL:   '>=';
 TK_MENORIGUAL:   '<=';

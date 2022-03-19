@@ -48,7 +48,6 @@ func (p Println) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 		
 		value += fmt.Sprintf("%v", result.Valor)
 		value += "\n"
-		fmt.Println(value)
 		tree.AddCode(value)
 	}else{
 		value := result.Valor.(string)
