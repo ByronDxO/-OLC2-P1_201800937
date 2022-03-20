@@ -17,10 +17,12 @@ type Declaration struct {
 	IsMut		bool
 	IsArray 	bool
 	IsStruct 	bool
+	Row			int
+	Column		int
 }
 
-func NewDeclaration(id string, tipo interfaces.TipoExpresion, val interfaces.Expresion, isMut bool, isArray bool, isStruct bool) Declaration {
-	instr := Declaration{id, tipo, val, isMut, isArray, isStruct}
+func NewDeclaration(id string, tipo interfaces.TipoExpresion, val interfaces.Expresion, isMut bool, isArray bool, isStruct bool, row int, column int) Declaration {
+	instr := Declaration{id, tipo, val, isMut, isArray, isStruct, row, column}
 	return instr
 }
 
@@ -34,8 +36,8 @@ func (p Declaration) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 	symbol := env.(environment.Environment).GetSymbol(p.Id)
 
 	if symbol.Tipo != interfaces.NULL {
-		excep := ast.NewException("Semantico","Ya Existe ese Id "+p.Id)
-		tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "Ya Existe ese Id "+ p.Id})
+		excep := ast.NewException("Semantico","Ya Existe ese Id "+p.Id, p.Row, p.Column)
+		tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "Ya Existe ese Id "+ p.Id, Row: p.Row, Column: p.Column})
 		return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 
 	}
@@ -53,8 +55,8 @@ func (p Declaration) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 	} else if p.IsStruct {
 		env.(environment.Environment).AddSymbol(p.Id, result, interfaces.STRUCT)*/
 	}else {
-		excep := ast.NewException("Semantico","Tipo incorrecto en Declaracion.")
-		tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "Tipo incorrecto en Declaracion."})
+		excep := ast.NewException("Semantico","Tipo incorrecto en Declaracion.", p.Row, p.Column)
+		tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "Tipo incorrecto en Declaracion.", Row: p.Row, Column: p.Column})
 		
 		eTipo := excep.Tipo
 		eDesc := excep.Descripcion

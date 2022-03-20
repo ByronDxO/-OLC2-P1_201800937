@@ -11,11 +11,13 @@ import (
 type Assignment struct {
 	Id 			string
 	Expresion	interfaces.Expresion
+	Row			int
+	Column		int
 }
 
 
-func NewAssignment(id string, val interfaces.Expresion) Assignment {
-	instr := Assignment{id, val}
+func NewAssignment(id string, val interfaces.Expresion, row int, column int) Assignment {
+	instr := Assignment{id, val, row, column}
 	return instr
 }
 
@@ -28,8 +30,8 @@ func (p Assignment) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 	symbol := env.(environment.Environment).GetSymbol(p.Id)
 
 	if symbol.Tipo == interfaces.NULL {
-		excep := ast.NewException("Semantico","No Existe ese Id "+p.Id)
-		tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No Existe ese Id "+ p.Id})
+		excep := ast.NewException("Semantico", "No Existe ese Id " + p.Id , p.Row, p.Column)
+		tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No Existe ese Id "+ p.Id, Row: p.Row, Column: p.Column})
 
 		eTipo := excep.Tipo
 		eDesc := excep.Descripcion
@@ -49,8 +51,8 @@ func (p Assignment) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 	if symbol.IsMut {
 		env.(environment.Environment).SetSymbol(p.Id, result)
 	}else {
-		excep := ast.NewException("Semantico","No se puede asignar a " + p.Id + ", no es mutable.")
-		tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No se puede asignar a " + p.Id + ", no es mutable."})
+		excep := ast.NewException("Semantico","No se puede asignar a " + p.Id + ", no es mutable.", p.Row, p.Column)
+		tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No se puede asignar a " + p.Id + ", no es mutable.", Row: p.Row, Column: p.Column})
 		eTipo := excep.Tipo
 		eDesc := excep.Descripcion
 		value += fmt.Sprintf("%v", eTipo)

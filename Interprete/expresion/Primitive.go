@@ -9,6 +9,8 @@ import (
 type Primitivo struct {
 	Valor interface{}
 	Tipo interfaces.TipoExpresion
+	Row 	int
+	Column 	int
 }
 
 func (p Primitivo) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Symbol {
@@ -22,8 +24,8 @@ func (p Primitivo) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Symb
 }
 
 
-func PRIMITIVO(val interface{}, tipo interfaces.TipoExpresion) Primitivo {
-	expression := Primitivo{val, tipo}
+func PRIMITIVO(val interface{}, tipo interfaces.TipoExpresion, row int, column int) Primitivo {
+	expression := Primitivo{val, tipo, row, column}
 	return expression
 
 }

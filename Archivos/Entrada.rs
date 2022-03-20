@@ -213,8 +213,14 @@ fn main() {
     // // xx = 1;
     // println!("{}",z);
 
-    let mut y = 2+3;
-    println!("{}",y);
-    y = 2;
-    println!("{}",y);
+    // let mut y = 2+3;
+    // println!("{}",y);
+    // y = 2;
+    // println!("{}",y);
+
+    let mut peso = 78;
+    println!("{}", peso);
+    peso = 75;
+    println!("{}", peso);
+
 }

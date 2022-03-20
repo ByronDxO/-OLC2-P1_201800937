@@ -25,12 +25,19 @@ func (p Println) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 	result = p.Expresion.Interpretar(env, tree)
 	getFormato(p.Formato)
 	if(result.Tipo == interfaces.EXCEPTION){
-		eTipo := result.Valor.(*ast.Exception).Tipo
-		eDesc := result.Valor.(*ast.Exception).Descripcion
+		eTipo 	:= result.Valor.(*ast.Exception).Tipo
+		eDesc 	:= result.Valor.(*ast.Exception).Descripcion
+		eRow 	:= result.Valor.(*ast.Exception).Row
+		eColumn := result.Valor.(*ast.Exception).Column
 		
 		value += fmt.Sprintf("%v", eTipo)
 		value += " - "
 		value += fmt.Sprintf("%v", eDesc)
+		value += " ("
+		value += fmt.Sprintf("%v", eRow)
+		value += ","
+		value += fmt.Sprintf("%v", eColumn)
+		value += ")"
 		value += "\n"
 		tree.AddCode(value)
 		return value

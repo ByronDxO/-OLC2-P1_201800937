@@ -15,6 +15,8 @@ type Arbol struct {
 type Exception struct {
 	Tipo 		string
 	Descripcion string
+	Row			int
+	Column 		int
 }
 
 
@@ -23,8 +25,8 @@ func NewArbol() *Arbol {
 	return &tree
 }
 
-func NewException(tipo string, descripcion string) *Exception {
-	e := Exception{Tipo: tipo, Descripcion: descripcion}
+func NewException(tipo string, descripcion string, row int, column int) *Exception {
+	e := Exception{Tipo: tipo, Descripcion: descripcion, Row: row, Column: column}
 	return &e
 }
 

@@ -835,8 +835,14 @@ type IInstr_declaracionContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// Get_R_LET returns the _R_LET token.
+	Get_R_LET() antlr.Token
+
 	// Get_ID returns the _ID token.
 	Get_ID() antlr.Token
+
+	// Set_R_LET sets the _R_LET token.
+	Set_R_LET(antlr.Token)
 
 	// Set_ID sets the _ID token.
 	Set_ID(antlr.Token)
@@ -867,6 +873,7 @@ type Instr_declaracionContext struct {
 	*antlr.BaseParserRuleContext
 	parser      antlr.Parser
 	instr       interfaces.Instruction
+	_R_LET      antlr.Token
 	_ID         antlr.Token
 	_expression IExpressionContext
 	_instr_tipo IInstr_tipoContext
@@ -894,7 +901,11 @@ func NewInstr_declaracionContext(parser antlr.Parser, parent antlr.ParserRuleCon
 
 func (s *Instr_declaracionContext) GetParser() antlr.Parser { return s.parser }
 
+func (s *Instr_declaracionContext) Get_R_LET() antlr.Token { return s._R_LET }
+
 func (s *Instr_declaracionContext) Get_ID() antlr.Token { return s._ID }
+
+func (s *Instr_declaracionContext) Set_R_LET(v antlr.Token) { s._R_LET = v }
 
 func (s *Instr_declaracionContext) Set_ID(v antlr.Token) { s._ID = v }
 
@@ -1001,7 +1012,10 @@ func (p *Chems) Instr_declaracion() (localctx IInstr_declaracionContext) {
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(53)
-			p.Match(ChemsR_LET)
+
+			var _m = p.Match(ChemsR_LET)
+
+			localctx.(*Instr_declaracionContext)._R_LET = _m
 		}
 		{
 			p.SetState(54)
@@ -1035,13 +1049,22 @@ func (p *Chems) Instr_declaracion() (localctx IInstr_declaracionContext) {
 			} else {
 				return localctx.(*Instr_declaracionContext).Get_ID().GetText()
 			}
-		}()), interfaces.NULL, localctx.(*Instr_declaracionContext).Get_expression().GetP(), true, false, false)
+		}()), interfaces.NULL, localctx.(*Instr_declaracionContext).Get_expression().GetP(), true, false, false, (func() int {
+			if localctx.(*Instr_declaracionContext).Get_R_LET() == nil {
+				return 0
+			} else {
+				return localctx.(*Instr_declaracionContext).Get_R_LET().GetLine()
+			}
+		}()), localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn())
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
 			p.SetState(61)
-			p.Match(ChemsR_LET)
+
+			var _m = p.Match(ChemsR_LET)
+
+			localctx.(*Instr_declaracionContext)._R_LET = _m
 		}
 		{
 			p.SetState(62)
@@ -1086,13 +1109,22 @@ func (p *Chems) Instr_declaracion() (localctx IInstr_declaracionContext) {
 			} else {
 				return localctx.(*Instr_declaracionContext).Get_ID().GetText()
 			}
-		}()), localctx.(*Instr_declaracionContext).Get_instr_tipo().GetTipo_exp(), localctx.(*Instr_declaracionContext).Get_expression().GetP(), true, false, false)
+		}()), localctx.(*Instr_declaracionContext).Get_instr_tipo().GetTipo_exp(), localctx.(*Instr_declaracionContext).Get_expression().GetP(), true, false, false, (func() int {
+			if localctx.(*Instr_declaracionContext).Get_R_LET() == nil {
+				return 0
+			} else {
+				return localctx.(*Instr_declaracionContext).Get_R_LET().GetLine()
+			}
+		}()), localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn())
 
 	case 3:
 		p.EnterOuterAlt(localctx, 3)
 		{
 			p.SetState(71)
-			p.Match(ChemsR_LET)
+
+			var _m = p.Match(ChemsR_LET)
+
+			localctx.(*Instr_declaracionContext)._R_LET = _m
 		}
 		{
 			p.SetState(72)
@@ -1122,13 +1154,22 @@ func (p *Chems) Instr_declaracion() (localctx IInstr_declaracionContext) {
 			} else {
 				return localctx.(*Instr_declaracionContext).Get_ID().GetText()
 			}
-		}()), interfaces.NULL, localctx.(*Instr_declaracionContext).Get_expression().GetP(), false, false, false)
+		}()), interfaces.NULL, localctx.(*Instr_declaracionContext).Get_expression().GetP(), false, false, false, (func() int {
+			if localctx.(*Instr_declaracionContext).Get_R_LET() == nil {
+				return 0
+			} else {
+				return localctx.(*Instr_declaracionContext).Get_R_LET().GetLine()
+			}
+		}()), localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn())
 
 	case 4:
 		p.EnterOuterAlt(localctx, 4)
 		{
 			p.SetState(78)
-			p.Match(ChemsR_LET)
+
+			var _m = p.Match(ChemsR_LET)
+
+			localctx.(*Instr_declaracionContext)._R_LET = _m
 		}
 		{
 			p.SetState(79)
@@ -1169,7 +1210,13 @@ func (p *Chems) Instr_declaracion() (localctx IInstr_declaracionContext) {
 			} else {
 				return localctx.(*Instr_declaracionContext).Get_ID().GetText()
 			}
-		}()), localctx.(*Instr_declaracionContext).Get_instr_tipo().GetTipo_exp(), localctx.(*Instr_declaracionContext).Get_expression().GetP(), false, false, false)
+		}()), localctx.(*Instr_declaracionContext).Get_instr_tipo().GetTipo_exp(), localctx.(*Instr_declaracionContext).Get_expression().GetP(), false, false, false, (func() int {
+			if localctx.(*Instr_declaracionContext).Get_R_LET() == nil {
+				return 0
+			} else {
+				return localctx.(*Instr_declaracionContext).Get_R_LET().GetLine()
+			}
+		}()), localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn())
 
 	}
 
@@ -1338,7 +1385,13 @@ func (p *Chems) Instr_asignacion() (localctx IInstr_asignacionContext) {
 		} else {
 			return localctx.(*Instr_asignacionContext).Get_ID().GetText()
 		}
-	}()), localctx.(*Instr_asignacionContext).Get_expression().GetP())
+	}()), localctx.(*Instr_asignacionContext).Get_expression().GetP(), (func() int {
+		if localctx.(*Instr_asignacionContext).Get_ID() == nil {
+			return 0
+		} else {
+			return localctx.(*Instr_asignacionContext).Get_ID().GetLine()
+		}
+	}()), localctx.(*Instr_asignacionContext).Get_ID().GetColumn())
 
 	return localctx
 }
@@ -1982,7 +2035,13 @@ func (p *Chems) exp_arit(_p int) (localctx IExp_aritContext) {
 			} else {
 				return localctx.(*Exp_aritContext).GetTipo_left().GetText()
 			}
-		}()), "-1")
+		}()), "-1", (func() int {
+			if localctx.(*Exp_aritContext).GetOp() == nil {
+				return 0
+			} else {
+				return localctx.(*Exp_aritContext).GetOp().GetLine()
+			}
+		}()), localctx.(*Exp_aritContext).GetOp().GetColumn())
 
 	case 2:
 		{
@@ -2087,7 +2146,13 @@ func (p *Chems) exp_arit(_p int) (localctx IExp_aritContext) {
 			} else {
 				return localctx.(*Exp_aritContext).GetTipo_right().GetText()
 			}
-		}()))
+		}()), (func() int {
+			if localctx.(*Exp_aritContext).GetOp() == nil {
+				return 0
+			} else {
+				return localctx.(*Exp_aritContext).GetOp().GetLine()
+			}
+		}()), localctx.(*Exp_aritContext).GetOp().GetColumn())
 
 	case 3:
 		{
@@ -2160,7 +2225,13 @@ func (p *Chems) exp_arit(_p int) (localctx IExp_aritContext) {
 			} else {
 				return localctx.(*Exp_aritContext).GetTipo_left().GetText()
 			}
-		}()), "-1")
+		}()), "-1", (func() int {
+			if localctx.(*Exp_aritContext).GetOp() == nil {
+				return 0
+			} else {
+				return localctx.(*Exp_aritContext).GetOp().GetLine()
+			}
+		}()), localctx.(*Exp_aritContext).GetOp().GetColumn())
 
 	case 4:
 		{
@@ -2265,7 +2336,13 @@ func (p *Chems) exp_arit(_p int) (localctx IExp_aritContext) {
 			} else {
 				return localctx.(*Exp_aritContext).GetTipo_right().GetText()
 			}
-		}()))
+		}()), (func() int {
+			if localctx.(*Exp_aritContext).GetOp() == nil {
+				return 0
+			} else {
+				return localctx.(*Exp_aritContext).GetOp().GetLine()
+			}
+		}()), localctx.(*Exp_aritContext).GetOp().GetColumn())
 
 	case 5:
 		{
@@ -2338,7 +2415,13 @@ func (p *Chems) exp_arit(_p int) (localctx IExp_aritContext) {
 			} else {
 				return localctx.(*Exp_aritContext).GetTipo_left().GetText()
 			}
-		}()), "-1")
+		}()), "-1", (func() int {
+			if localctx.(*Exp_aritContext).GetOp() == nil {
+				return 0
+			} else {
+				return localctx.(*Exp_aritContext).GetOp().GetLine()
+			}
+		}()), localctx.(*Exp_aritContext).GetOp().GetColumn())
 
 	case 6:
 		{
@@ -2443,7 +2526,13 @@ func (p *Chems) exp_arit(_p int) (localctx IExp_aritContext) {
 			} else {
 				return localctx.(*Exp_aritContext).GetTipo_right().GetText()
 			}
-		}()))
+		}()), (func() int {
+			if localctx.(*Exp_aritContext).GetOp() == nil {
+				return 0
+			} else {
+				return localctx.(*Exp_aritContext).GetOp().GetLine()
+			}
+		}()), localctx.(*Exp_aritContext).GetOp().GetColumn())
 
 	case 7:
 		{
@@ -2477,7 +2566,13 @@ func (p *Chems) exp_arit(_p int) (localctx IExp_aritContext) {
 			} else {
 				return localctx.(*Exp_aritContext).GetOp().GetText()
 			}
-		}()), nil, true, "-1", "-1")
+		}()), nil, true, "-1", "-1", (func() int {
+			if localctx.(*Exp_aritContext).GetOp() == nil {
+				return 0
+			} else {
+				return localctx.(*Exp_aritContext).GetOp().GetLine()
+			}
+		}()), localctx.(*Exp_aritContext).GetOp().GetColumn())
 
 	case 8:
 		{
@@ -2543,7 +2638,13 @@ func (p *Chems) exp_arit(_p int) (localctx IExp_aritContext) {
 			} else {
 				return localctx.(*Exp_aritContext).GetTipo_left().GetText()
 			}
-		}()), "-1")
+		}()), "-1", (func() int {
+			if localctx.(*Exp_aritContext).GetOp() == nil {
+				return 0
+			} else {
+				return localctx.(*Exp_aritContext).GetOp().GetLine()
+			}
+		}()), localctx.(*Exp_aritContext).GetOp().GetColumn())
 
 	case 9:
 		{
@@ -2628,7 +2729,13 @@ func (p *Chems) exp_arit(_p int) (localctx IExp_aritContext) {
 					} else {
 						return localctx.(*Exp_aritContext).GetOp().GetText()
 					}
-				}()), localctx.(*Exp_aritContext).GetRight().GetP(), false, "-1", "-1")
+				}()), localctx.(*Exp_aritContext).GetRight().GetP(), false, "-1", "-1", (func() int {
+					if localctx.(*Exp_aritContext).GetOp() == nil {
+						return 0
+					} else {
+						return localctx.(*Exp_aritContext).GetOp().GetLine()
+					}
+				}()), localctx.(*Exp_aritContext).GetOp().GetColumn())
 
 			case 2:
 				localctx = NewExp_aritContext(p, _parentctx, _parentState)
@@ -2670,7 +2777,13 @@ func (p *Chems) exp_arit(_p int) (localctx IExp_aritContext) {
 					} else {
 						return localctx.(*Exp_aritContext).GetOp().GetText()
 					}
-				}()), localctx.(*Exp_aritContext).GetRight().GetP(), false, "-1", "-1")
+				}()), localctx.(*Exp_aritContext).GetRight().GetP(), false, "-1", "-1", (func() int {
+					if localctx.(*Exp_aritContext).GetOp() == nil {
+						return 0
+					} else {
+						return localctx.(*Exp_aritContext).GetOp().GetLine()
+					}
+				}()), localctx.(*Exp_aritContext).GetOp().GetColumn())
 
 			case 3:
 				localctx = NewExp_aritContext(p, _parentctx, _parentState)
@@ -2712,7 +2825,13 @@ func (p *Chems) exp_arit(_p int) (localctx IExp_aritContext) {
 					} else {
 						return localctx.(*Exp_aritContext).GetOp().GetText()
 					}
-				}()), localctx.(*Exp_aritContext).GetRight().GetP(), false, "-1", "-1")
+				}()), localctx.(*Exp_aritContext).GetRight().GetP(), false, "-1", "-1", (func() int {
+					if localctx.(*Exp_aritContext).GetOp() == nil {
+						return 0
+					} else {
+						return localctx.(*Exp_aritContext).GetOp().GetLine()
+					}
+				}()), localctx.(*Exp_aritContext).GetOp().GetColumn())
 
 			case 4:
 				localctx = NewExp_aritContext(p, _parentctx, _parentState)
@@ -2754,7 +2873,13 @@ func (p *Chems) exp_arit(_p int) (localctx IExp_aritContext) {
 					} else {
 						return localctx.(*Exp_aritContext).GetOp().GetText()
 					}
-				}()), localctx.(*Exp_aritContext).GetRight().GetP(), false, "-1", "-1")
+				}()), localctx.(*Exp_aritContext).GetRight().GetP(), false, "-1", "-1", (func() int {
+					if localctx.(*Exp_aritContext).GetOp() == nil {
+						return 0
+					} else {
+						return localctx.(*Exp_aritContext).GetOp().GetLine()
+					}
+				}()), localctx.(*Exp_aritContext).GetOp().GetColumn())
 
 			case 5:
 				localctx = NewExp_aritContext(p, _parentctx, _parentState)
@@ -2828,7 +2953,13 @@ func (p *Chems) exp_arit(_p int) (localctx IExp_aritContext) {
 					} else {
 						return localctx.(*Exp_aritContext).GetTipo_right().GetText()
 					}
-				}()))
+				}()), (func() int {
+					if localctx.(*Exp_aritContext).GetOp() == nil {
+						return 0
+					} else {
+						return localctx.(*Exp_aritContext).GetOp().GetLine()
+					}
+				}()), localctx.(*Exp_aritContext).GetOp().GetColumn())
 
 			case 6:
 				localctx = NewExp_aritContext(p, _parentctx, _parentState)
@@ -2902,7 +3033,13 @@ func (p *Chems) exp_arit(_p int) (localctx IExp_aritContext) {
 					} else {
 						return localctx.(*Exp_aritContext).GetTipo_right().GetText()
 					}
-				}()))
+				}()), (func() int {
+					if localctx.(*Exp_aritContext).GetOp() == nil {
+						return 0
+					} else {
+						return localctx.(*Exp_aritContext).GetOp().GetLine()
+					}
+				}()), localctx.(*Exp_aritContext).GetOp().GetColumn())
 
 			case 7:
 				localctx = NewExp_aritContext(p, _parentctx, _parentState)
@@ -2976,7 +3113,13 @@ func (p *Chems) exp_arit(_p int) (localctx IExp_aritContext) {
 					} else {
 						return localctx.(*Exp_aritContext).GetTipo_right().GetText()
 					}
-				}()))
+				}()), (func() int {
+					if localctx.(*Exp_aritContext).GetOp() == nil {
+						return 0
+					} else {
+						return localctx.(*Exp_aritContext).GetOp().GetLine()
+					}
+				}()), localctx.(*Exp_aritContext).GetOp().GetColumn())
 
 			}
 
@@ -3177,7 +3320,14 @@ func (p *Chems) Primitivo() (localctx IPrimitivoContext) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		localctx.(*PrimitivoContext).p = expresion.PRIMITIVO(num, interfaces.INTEGER)
+
+		localctx.(*PrimitivoContext).p = expresion.PRIMITIVO(num, interfaces.INTEGER, (func() int {
+			if localctx.(*PrimitivoContext).Get_NUMBER() == nil {
+				return 0
+			} else {
+				return localctx.(*PrimitivoContext).Get_NUMBER().GetLine()
+			}
+		}()), localctx.(*PrimitivoContext).Get_NUMBER().GetColumn())
 
 	case ChemsDOUBLE:
 		p.EnterOuterAlt(localctx, 2)
@@ -3199,7 +3349,13 @@ func (p *Chems) Primitivo() (localctx IPrimitivoContext) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		localctx.(*PrimitivoContext).p = expresion.PRIMITIVO(num, interfaces.FLOAT)
+		localctx.(*PrimitivoContext).p = expresion.PRIMITIVO(num, interfaces.FLOAT, (func() int {
+			if localctx.(*PrimitivoContext).Get_DOUBLE() == nil {
+				return 0
+			} else {
+				return localctx.(*PrimitivoContext).Get_DOUBLE().GetLine()
+			}
+		}()), localctx.(*PrimitivoContext).Get_DOUBLE().GetColumn())
 
 	case ChemsSTRING:
 		p.EnterOuterAlt(localctx, 3)
@@ -3224,7 +3380,13 @@ func (p *Chems) Primitivo() (localctx IPrimitivoContext) {
 				return localctx.(*PrimitivoContext).Get_STRING().GetText()
 			}
 		}()))-1]
-		localctx.(*PrimitivoContext).p = expresion.PRIMITIVO(str, interfaces.STRING)
+		localctx.(*PrimitivoContext).p = expresion.PRIMITIVO(str, interfaces.STRING, (func() int {
+			if localctx.(*PrimitivoContext).Get_STRING() == nil {
+				return 0
+			} else {
+				return localctx.(*PrimitivoContext).Get_STRING().GetLine()
+			}
+		}()), localctx.(*PrimitivoContext).Get_STRING().GetColumn())
 
 	case ChemsBOOLEAN:
 		p.EnterOuterAlt(localctx, 4)
@@ -3243,7 +3405,13 @@ func (p *Chems) Primitivo() (localctx IPrimitivoContext) {
 			} else {
 				return localctx.(*PrimitivoContext).Get_BOOLEAN().GetText()
 			}
-		}()), interfaces.BOOLEAN)
+		}()), interfaces.BOOLEAN, (func() int {
+			if localctx.(*PrimitivoContext).Get_BOOLEAN() == nil {
+				return 0
+			} else {
+				return localctx.(*PrimitivoContext).Get_BOOLEAN().GetLine()
+			}
+		}()), localctx.(*PrimitivoContext).Get_BOOLEAN().GetColumn())
 
 	case ChemsID:
 		p.EnterOuterAlt(localctx, 5)
@@ -3260,7 +3428,13 @@ func (p *Chems) Primitivo() (localctx IPrimitivoContext) {
 			} else {
 				return localctx.(*PrimitivoContext).Get_ID().GetText()
 			}
-		}()))
+		}()), (func() int {
+			if localctx.(*PrimitivoContext).Get_ID() == nil {
+				return 0
+			} else {
+				return localctx.(*PrimitivoContext).Get_ID().GetLine()
+			}
+		}()), localctx.(*PrimitivoContext).Get_ID().GetColumn())
 
 	default:
 		panic(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))

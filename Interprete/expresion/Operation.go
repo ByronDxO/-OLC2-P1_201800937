@@ -15,16 +15,21 @@ type Aritmetica struct {
 	Unario   	bool
 	type_left   string
 	type_right  string
+	Row 		int
+	Column 		int
 }
 
-func NewOperacion(left interfaces.Expresion, Operator string, right interfaces.Expresion, unario bool, type_left string, type_right string) Aritmetica {
+func NewOperacion(left interfaces.Expresion, Operator string, right interfaces.Expresion, unario bool, type_left string, type_right string, row int, column int) Aritmetica {
 
-	exp := Aritmetica{left, Operator, right, unario, type_left, type_right}
+	exp := Aritmetica{left, Operator, right, unario, type_left, type_right, row, column}
 	return exp
 }
 
 func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Symbol {
 	
+	fmt.Println("opeation")
+	fmt.Println(p.Row)
+	fmt.Println(p.Column)
 
 
 	var exp_left interfaces.Symbol
@@ -80,8 +85,8 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 				return interfaces.Symbol{Id: "", Tipo: interfaces.STRING, Valor: r1 + r2}
 
 			}else {
-				excep := ast.NewException("Semantico","No es posible Sumar.")
-				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible Sumar."})
+				excep := ast.NewException("Semantico","No es posible Sumar.", p.Row, p.Column)
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible Sumar.", Row: p.Row, Column: p.Column})
 				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 
 			}
@@ -107,9 +112,9 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 					return interfaces.Symbol{Id: "", Tipo: interfaces.FLOAT, Valor: float64((-1.0)*(exp_left.Valor.(float64)))}
 				
 				}else {
-				
-					excep := ast.NewException("Semantico","No es posible Unario.")
-					tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible Unario."})
+					
+					excep := ast.NewException("Semantico","No es posible Unario.", p.Row, p.Column)
+					tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible Unario.", Row: p.Row, Column: p.Column})
 					return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 
 				}
@@ -145,8 +150,8 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 				}else {
 					
-					excep := ast.NewException("Semantico","No es posible Restar.")
-					tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible Restar."})
+					excep := ast.NewException("Semantico","No es posible Restar.", p.Row, p.Column)
+					tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible Restar.", Row: p.Row, Column: p.Column})
 					return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 
 				}
@@ -184,8 +189,8 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 			}else {
 				
-				excep := ast.NewException("Semantico","No es posible Multiplicar.")
-				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible Multiplicar."})
+				excep := ast.NewException("Semantico","No es posible Multiplicar.", p.Row, p.Column)
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible Multiplicar.", Row: p.Row, Column: p.Column})
 				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 
 			}
@@ -222,8 +227,8 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 			}else {
 				
-				excep := ast.NewException("Semantico","No es posible Dividir.")
-				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible Dividir."})
+				excep := ast.NewException("Semantico","No es posible Dividir.", p.Row, p.Column)
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible Dividir.", Row: p.Row, Column: p.Column})
 				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 
 			}
@@ -260,8 +265,8 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 			}else {
 				
-				excep := ast.NewException("Semantico","No es posible el Modulo %.")
-				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible el Modulo %."})
+				excep := ast.NewException("Semantico","No es posible el Modulo %.", p.Row, p.Column)
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible el Modulo %.", Row: p.Row, Column: p.Column})
 				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 
 			}
@@ -298,8 +303,8 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 			}else {
 				
-				excep := ast.NewException("Semantico","No es posible comparar <.")
-				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar <."})
+				excep := ast.NewException("Semantico","No es posible comparar <.", p.Row, p.Column)
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar <.", Row: p.Row, Column: p.Column})
 				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 
 			}
@@ -336,8 +341,8 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 			}else {
 				
-				excep := ast.NewException("Semantico","No es posible comparar >.")
-				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar >."})
+				excep := ast.NewException("Semantico","No es posible comparar >.", p.Row, p.Column)
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar >.", Row: p.Row, Column: p.Column})
 				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 
 			}
@@ -374,8 +379,8 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 			}else {
 				
-				excep := ast.NewException("Semantico","No es posible comparar <=.")
-				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar <=."})
+				excep := ast.NewException("Semantico","No es posible comparar <=.", p.Row, p.Column)
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar <=.", Row: p.Row, Column: p.Column})
 				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 
 			}
@@ -412,8 +417,8 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 			}else {
 				
-				excep := ast.NewException("Semantico","No es posible comparar >=.")
-				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar >=."})
+				excep := ast.NewException("Semantico","No es posible comparar >=.", p.Row, p.Column)
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar >=.", Row: p.Row, Column: p.Column})
 				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 
 			}
@@ -450,8 +455,8 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 			}else {
 				
-				excep := ast.NewException("Semantico","No es posible comparar !=.")
-				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar !=."})
+				excep := ast.NewException("Semantico","No es posible comparar !=.", p.Row, p.Column)
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar !=.", Row: p.Row, Column: p.Column})
 				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 
 			}
@@ -470,8 +475,8 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 		
 			}else {
 				
-				excep := ast.NewException("Semantico","No es posible comparar &&.")
-				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar &&."})
+				excep := ast.NewException("Semantico","No es posible comparar &&.", p.Row, p.Column)
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar &&.", Row: p.Row, Column: p.Column})
 				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 
 			}
@@ -490,8 +495,8 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 		
 			}else {
 				
-				excep := ast.NewException("Semantico","No es posible comparar ||.")
-				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar ||."})
+				excep := ast.NewException("Semantico","No es posible comparar ||.", p.Row, p.Column)
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar ||.", Row: p.Row, Column: p.Column})
 				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 
 			}
@@ -507,15 +512,15 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 			
 				}else {
 					
-					excep := ast.NewException("Semantico","No es posible comparar !.")
-					tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar !."})
+					excep := ast.NewException("Semantico","No es posible comparar !.", p.Row, p.Column)
+					tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar !.", Row: p.Row, Column: p.Column})
 					return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 	
 				}
 			}
 
-			excep := ast.NewException("Semantico","No es posible, unario incorrecto en !.")
-			tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible, unario incorrecto en !"})
+			excep := ast.NewException("Semantico","No es posible, unario incorrecto en !.", p.Row, p.Column)
+			tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible, unario incorrecto en !", Row: p.Row, Column: p.Column})
 			return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 
 			
