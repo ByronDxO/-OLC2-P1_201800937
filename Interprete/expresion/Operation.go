@@ -3,7 +3,7 @@ package expresion
 import (
 	"OLC2/Interprete/interfaces"
 	"OLC2/Interprete/ast"
-	"fmt"
+	"fmt"	
 	"math"
 	"strconv"
 )
@@ -297,6 +297,10 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
 				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(float64) < exp_right.Valor.(float64)}
 
+			/* ************************************************************** BOOLEAN ************************************************************** */
+			}else if (exp_left.Tipo == interfaces.BOOLEAN) && (exp_right.Tipo == interfaces.BOOLEAN) {
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: casteoBool(exp_left.Valor.(string)) < casteoBool(exp_right.Valor.(string))}
+
 			}else {
 				
 				excep := ast.NewException("Semantico","No es posible comparar <.", p.Row, p.Column)
@@ -334,6 +338,10 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
 				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(float64) > exp_right.Valor.(float64)}
+
+			/* ************************************************************** BOOLEAN ************************************************************** */
+			}else if (exp_left.Tipo == interfaces.BOOLEAN) && (exp_right.Tipo == interfaces.BOOLEAN) {
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: casteoBool(exp_left.Valor.(string)) > casteoBool(exp_right.Valor.(string))}
 
 			}else {
 				
@@ -373,6 +381,10 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
 				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(float64) <= exp_right.Valor.(float64)}
 
+			/* ************************************************************** BOOLEAN ************************************************************** */
+			}else if (exp_left.Tipo == interfaces.BOOLEAN) && (exp_right.Tipo == interfaces.BOOLEAN) {
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: casteoBool(exp_left.Valor.(string)) <= casteoBool(exp_right.Valor.(string))}
+
 			}else {
 				
 				excep := ast.NewException("Semantico","No es posible comparar <=.", p.Row, p.Column)
@@ -410,6 +422,10 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
 				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(float64) >= exp_right.Valor.(float64)}
+
+			/* ************************************************************** BOOLEAN ************************************************************** */
+			}else if (exp_left.Tipo == interfaces.BOOLEAN) && (exp_right.Tipo == interfaces.BOOLEAN) {
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: casteoBool(exp_left.Valor.(string)) >= casteoBool(exp_right.Valor.(string))}
 
 			}else {
 				
@@ -449,6 +465,16 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
 				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(float64) != exp_right.Valor.(float64)}
 
+			/* ************************************************************** STRING ************************************************************** */
+			}else if (exp_left.Tipo == interfaces.STRING) && (exp_right.Tipo == interfaces.STRING) {
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(string) != exp_right.Valor.(string)}
+
+			/* ************************************************************** BOOLEAN ************************************************************** */
+			}else if (exp_left.Tipo == interfaces.BOOLEAN) && (exp_right.Tipo == interfaces.BOOLEAN) {
+				exp1,_ := strconv.ParseBool(fmt.Sprintf("%v", exp_left.Valor))
+				exp2,_ := strconv.ParseBool(fmt.Sprintf("%v", exp_right.Valor))
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp1 != exp2}
+
 			}else {
 				
 				excep := ast.NewException("Semantico","No es posible comparar !=.", p.Row, p.Column)
@@ -487,10 +513,20 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
 				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(float64) == exp_right.Valor.(float64)}
 
+			/* ************************************************************** STRING ************************************************************** */
+			}else if (exp_left.Tipo == interfaces.STRING) && (exp_right.Tipo == interfaces.STRING) {
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(string) == exp_right.Valor.(string)}
+
+			/* ************************************************************** BOOLEAN ************************************************************** */
+			}else if (exp_left.Tipo == interfaces.BOOLEAN) && (exp_right.Tipo == interfaces.BOOLEAN) {
+				exp1,_ := strconv.ParseBool(fmt.Sprintf("%v", exp_left.Valor))
+				exp2,_ := strconv.ParseBool(fmt.Sprintf("%v", exp_right.Valor))
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp1 == exp2}
+
 			}else {
 				
-				excep := ast.NewException("Semantico","No es posible comparar !=.", p.Row, p.Column)
-				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar !=.", Row: p.Row, Column: p.Column})
+				excep := ast.NewException("Semantico","No es posible comparar ==.", p.Row, p.Column)
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar ==.", Row: p.Row, Column: p.Column})
 				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
 
 			}
@@ -566,4 +602,18 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 	
 
 	return interfaces.Symbol{Id: "", Tipo: interfaces.INTEGER, Valor: resultado}
+}
+
+
+
+func casteoBool(exp string) int {
+
+	exp1,_ := strconv.ParseBool(exp)
+	bitSetVar1 := int(0)
+
+	if exp1 {
+		bitSetVar1 = 1
+	}
+	
+	return bitSetVar1
 }

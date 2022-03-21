@@ -223,8 +223,10 @@ fn main() {
     // peso = 75;
     // println!("{}", peso);
 
-    let string1: &str = "hello";
-    println!("{}", string1);
+    // let string1: &str = "hello";
+    // println!("{}", string1);
 
+
+    println!("{}", true < 2)
 
 }
