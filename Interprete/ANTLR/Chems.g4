@@ -85,6 +85,8 @@ instr_tipo returns [interfaces.TipoExpresion tipo_exp]
   : R_INT       {$tipo_exp = interfaces.INTEGER}
   | R_FLOAT     {$tipo_exp = interfaces.FLOAT}
   | R_STRING    {$tipo_exp = interfaces.STRING}
+  | R_STR       {$tipo_exp = interfaces.STRING}
+  | R_BOOL      {$tipo_exp = interfaces.BOOLEAN}
 ;
 
 

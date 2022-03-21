@@ -3,17 +3,22 @@ lexer grammar ChemsLexer;
 
 // Tokens
 
+/* RESERVADAS */
 R_PRINTLN:      'println!';
 P_NUMBER:       'number';
 R_AS_DOUBLE:    'as f64';
 R_AS_INTEGER:   'as i64';
 R_LET:          'let';
 R_MUT:          'mut';
+R_IF:           'if';
+R_ELSE:         'else';
+
+/* TIPOS */
 R_INT:          'i64';
 R_FLOAT:        'f64';
 R_STRING:       'String';
-R_IF:           'if';
-R_ELSE:         'else';
+R_BOOL:         'bool';
+R_STR:          '&str';
 
 // P_IF:       'if';
 // P_WHILE:    'while';
@@ -33,7 +38,7 @@ TK_PUNTOCOMA:    ';';
 TK_COMA:         ',';
 TK_DOSPUNTOS:    ':';
 TK_IGUAL:        '=';
-TK_IGUALIGUAL:        '==';
+TK_IGUALIGUAL:   '==';
 TK_MAYORIGUAL:   '>=';
 TK_MENORIGUAL:   '<=';
 TK_DIFIGUAL:     '!=';

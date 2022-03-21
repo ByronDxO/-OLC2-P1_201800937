@@ -227,6 +227,10 @@ fn main() {
     // println!("{}", string1);
 
 
-    println!("{}", true < 2)
+    // println!("{}", true < 2)
+
+    let x : bool = true;
+    println!("{}", x);
+
 
 }
