@@ -144,7 +144,8 @@ primitivo returns[interfaces.Expresion p]
             
     |BOOLEAN { 
               // str:= $BOOLEAN.text[1:len($BOOLEAN.text)-1]
-              $p = expresion.PRIMITIVO($BOOLEAN.text,interfaces.BOOLEAN, $BOOLEAN.line, localctx.(*PrimitivoContext).Get_BOOLEAN().GetColumn())
+              exp,_ := strconv.ParseBool($BOOLEAN.text)
+              $p = expresion.PRIMITIVO(exp,interfaces.BOOLEAN, $BOOLEAN.line, localctx.(*PrimitivoContext).Get_BOOLEAN().GetColumn())
             }
 
     |ID       { $p = variable.NewIdentifier($ID.text, $ID.line, localctx.(*PrimitivoContext).Get_ID().GetColumn()) }

@@ -6,6 +6,7 @@ import (
 	"fmt"	
 	"math"
 	"strconv"
+	// "reflect"
 )
 
 type Aritmetica struct {
@@ -299,7 +300,7 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 			/* ************************************************************** BOOLEAN ************************************************************** */
 			}else if (exp_left.Tipo == interfaces.BOOLEAN) && (exp_right.Tipo == interfaces.BOOLEAN) {
-				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: casteoBool(exp_left.Valor.(string)) < casteoBool(exp_right.Valor.(string))}
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: casteoBool(exp_left.Valor.(bool)) < casteoBool(exp_right.Valor.(bool))}
 
 			}else {
 				
@@ -341,7 +342,7 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 			/* ************************************************************** BOOLEAN ************************************************************** */
 			}else if (exp_left.Tipo == interfaces.BOOLEAN) && (exp_right.Tipo == interfaces.BOOLEAN) {
-				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: casteoBool(exp_left.Valor.(string)) > casteoBool(exp_right.Valor.(string))}
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: casteoBool(exp_left.Valor.(bool)) > casteoBool(exp_right.Valor.(bool))}
 
 			}else {
 				
@@ -383,7 +384,7 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 			/* ************************************************************** BOOLEAN ************************************************************** */
 			}else if (exp_left.Tipo == interfaces.BOOLEAN) && (exp_right.Tipo == interfaces.BOOLEAN) {
-				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: casteoBool(exp_left.Valor.(string)) <= casteoBool(exp_right.Valor.(string))}
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: casteoBool(exp_left.Valor.(bool)) <= casteoBool(exp_right.Valor.(bool))}
 
 			}else {
 				
@@ -425,7 +426,7 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 			/* ************************************************************** BOOLEAN ************************************************************** */
 			}else if (exp_left.Tipo == interfaces.BOOLEAN) && (exp_right.Tipo == interfaces.BOOLEAN) {
-				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: casteoBool(exp_left.Valor.(string)) >= casteoBool(exp_right.Valor.(string))}
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: casteoBool(exp_left.Valor.(bool)) >= casteoBool(exp_right.Valor.(bool))}
 
 			}else {
 				
@@ -606,12 +607,11 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 
 
-func casteoBool(exp string) int {
+func casteoBool(exp bool) int {
 
-	exp1,_ := strconv.ParseBool(exp)
 	bitSetVar1 := int(0)
 
-	if exp1 {
+	if exp {
 		bitSetVar1 = 1
 	}
 	

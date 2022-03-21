@@ -4024,13 +4024,14 @@ func (p *Chems) Primitivo() (localctx IPrimitivoContext) {
 		}
 
 		// str:= (func() string { if localctx.(*PrimitivoContext).Get_BOOLEAN() == nil { return "" } else { return localctx.(*PrimitivoContext).Get_BOOLEAN().GetText() }}())[1:len((func() string { if localctx.(*PrimitivoContext).Get_BOOLEAN() == nil { return "" } else { return localctx.(*PrimitivoContext).Get_BOOLEAN().GetText() }}()))-1]
-		localctx.(*PrimitivoContext).p = expresion.PRIMITIVO((func() string {
+		exp, _ := strconv.ParseBool((func() string {
 			if localctx.(*PrimitivoContext).Get_BOOLEAN() == nil {
 				return ""
 			} else {
 				return localctx.(*PrimitivoContext).Get_BOOLEAN().GetText()
 			}
-		}()), interfaces.BOOLEAN, (func() int {
+		}()))
+		localctx.(*PrimitivoContext).p = expresion.PRIMITIVO(exp, interfaces.BOOLEAN, (func() int {
 			if localctx.(*PrimitivoContext).Get_BOOLEAN() == nil {
 				return 0
 			} else {
