@@ -51,6 +51,18 @@ func (s *BaseChemsListener) EnterInstr_asignacion(ctx *Instr_asignacionContext) 
 // ExitInstr_asignacion is called when production instr_asignacion is exited.
 func (s *BaseChemsListener) ExitInstr_asignacion(ctx *Instr_asignacionContext) {}
 
+// EnterInstr_if is called when production instr_if is entered.
+func (s *BaseChemsListener) EnterInstr_if(ctx *Instr_ifContext) {}
+
+// ExitInstr_if is called when production instr_if is exited.
+func (s *BaseChemsListener) ExitInstr_if(ctx *Instr_ifContext) {}
+
+// EnterInstr_else_if is called when production instr_else_if is entered.
+func (s *BaseChemsListener) EnterInstr_else_if(ctx *Instr_else_ifContext) {}
+
+// ExitInstr_else_if is called when production instr_else_if is exited.
+func (s *BaseChemsListener) ExitInstr_else_if(ctx *Instr_else_ifContext) {}
+
 // EnterInstr_tipo is called when production instr_tipo is entered.
 func (s *BaseChemsListener) EnterInstr_tipo(ctx *Instr_tipoContext) {}
 

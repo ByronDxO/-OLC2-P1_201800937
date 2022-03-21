@@ -218,9 +218,13 @@ fn main() {
     // y = 2;
     // println!("{}",y);
 
-    let mut peso = 78;
-    println!("{}", peso);
-    peso = 75;
-    println!("{}", peso);
+    // let mut peso = 78;
+    // println!("{}", peso);
+    // peso = 75;
+    // println!("{}", peso);
+
+    let string1: &str = "hello";
+    println!("{}", string1);
+
 
 }

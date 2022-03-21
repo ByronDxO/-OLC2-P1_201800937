@@ -12,6 +12,7 @@ options {
     import "OLC2/Interprete/expresion"
     import "OLC2/Interprete/instruction"
     import "OLC2/Interprete/instruction/variable"
+    import "OLC2/Interprete/instruction/control"
     import arrayList "github.com/colegno/arraylist"
     
 }
@@ -25,8 +26,8 @@ instrucciones returns [*arrayList.List l]
   @init{
     $l =  arrayList.New()
   }
-  : e +=instruccion*  {
-        listInt := localctx.(*InstruccionesContext).GetE()
+  : list +=instruccion+   {
+        listInt := localctx.(*InstruccionesContext).GetList()
         for _, e := range listInt {
             $l.Add(e.GetInstr())
         }
@@ -36,8 +37,9 @@ instrucciones returns [*arrayList.List l]
 instruccion returns [interfaces.Instruction instr]
   : R_PRINTLN TK_PARA expression TK_PARC TK_PUNTOCOMA                 { $instr = instruction.PRINTLN($expression.p, "-1") }
   | R_PRINTLN TK_PARA STRING TK_COMA expression TK_PARC TK_PUNTOCOMA  { $instr = instruction.PRINTLN($expression.p, $STRING.text[1:len($STRING.text)-1]) }
-  | instr_declaracion                                                 { $instr = $instr_declaracion.instr}
-  | instr_asignacion                                                  { $instr = $instr_asignacion.instr } 
+  | instr_declaracion                                                 { $instr = $instr_declaracion.instr }
+  | instr_asignacion                                                  { $instr = $instr_asignacion.instr  }
+  | instr_if                                                          { $instr = $instr_if.instr } 
 ;
 
 /******************************** [DECLARACION][VARIABLE] ********************************/
@@ -55,6 +57,28 @@ instr_declaracion returns [interfaces.Instruction instr]
 instr_asignacion returns [interfaces.Instruction instr]
   : ID TK_IGUAL expression TK_PUNTOCOMA                                       { $instr = variable.NewAssignment($ID.text, $expression.p, $ID.line, localctx.(*Instr_asignacionContext).Get_ID().GetColumn()) }
 ;
+
+/******************************** [CONTROL][IF] ********************************/
+instr_if returns [interfaces.Instruction instr]
+  : R_IF expression TK_LLAVEA left_instr=instrucciones TK_LLAVEC                                                       { $instr = control.NewIf($expression.p, $left_instr.l, nil, nil,               $R_IF.line) }
+  | R_IF expression TK_LLAVEA left_instr=instrucciones TK_LLAVEC R_ELSE TK_LLAVEA right_intr=instrucciones TK_LLAVEC   { $instr = control.NewIf($expression.p, $left_instr.l, $right_intr.l, nil,     $R_IF.line) }
+  | R_IF expression TK_LLAVEA left_instr=instrucciones TK_LLAVEC R_ELSE instr_else_if                                  { $instr = control.NewIf($expression.p, $left_instr.l, nil, $instr_else_if.l,   $R_IF.line) }
+;
+
+
+instr_else_if returns [*arrayList.List l]
+  @init{
+    $l =  arrayList.New()
+  }
+  : e +=instr_if*  {
+        listInt := localctx.(*Instr_else_ifContext).GetE()
+        for _, e := range listInt {
+            $l.Add(e.GetInstr())
+        }
+    }
+;
+
+
 
 /******************************** [TIPO] ********************************/
 instr_tipo returns [interfaces.TipoExpresion tipo_exp]
@@ -79,10 +103,10 @@ exp_arit returns [interfaces.Expresion p]
   | TK_PARA left = exp_arit tipo_left=('as f64'|'as i64') TK_PARC op=('+'|'-') right = exp_arit                                                                 { $p = expresion.NewOperacion($left.p, $op.text, $right.p, false, $tipo_left.text, "-1",             $op.line, localctx.(*Exp_aritContext).GetOp().GetColumn()) }
   | left = exp_arit op=('+'|'-') TK_PARA right = exp_arit tipo_right=('as f64'|'as i64') TK_PARC                                                                { $p = expresion.NewOperacion($left.p, $op.text, $right.p, false, "-1", $tipo_right.text,            $op.line, localctx.(*Exp_aritContext).GetOp().GetColumn()) }
   | TK_PARA left = exp_arit tipo_left=('as f64'|'as i64') TK_PARC op=('+'|'-') TK_PARA right = exp_arit tipo_right=('as f64'|'as i64') TK_PARC                  { $p = expresion.NewOperacion($left.p, $op.text, $right.p, false, $tipo_left.text, $tipo_right.text, $op.line, localctx.(*Exp_aritContext).GetOp().GetColumn()) }
-  | left = exp_arit op=('<'|'<='|'>='|'>'|'!=') right = exp_arit                                                                                                { $p = expresion.NewOperacion($left.p, $op.text, $right.p, false, "-1", "-1",                        $op.line, localctx.(*Exp_aritContext).GetOp().GetColumn()) }      
-  | TK_PARA left = exp_arit tipo_left=('as f64'|'as i64') TK_PARC op=('<'|'<='|'>='|'>'|'!=') right = exp_arit                                                  { $p = expresion.NewOperacion($left.p, $op.text, $right.p, false, $tipo_left.text, "-1",             $op.line, localctx.(*Exp_aritContext).GetOp().GetColumn()) }
-  | left = exp_arit op=('<'|'<='|'>='|'>'|'!=') TK_PARA right = exp_arit tipo_right=('as f64'|'as i64') TK_PARC                                                 { $p = expresion.NewOperacion($left.p, $op.text, $right.p, false, "-1", $tipo_right.text,            $op.line, localctx.(*Exp_aritContext).GetOp().GetColumn()) }
-  | TK_PARA left = exp_arit tipo_left=('as f64'|'as i64') TK_PARC op=('<'|'<='|'>='|'>'|'!=') TK_PARA right = exp_arit tipo_right=('as f64'|'as i64') TK_PARC   { $p = expresion.NewOperacion($left.p, $op.text, $right.p, false, $tipo_left.text, $tipo_right.text, $op.line, localctx.(*Exp_aritContext).GetOp().GetColumn()) }
+  | left = exp_arit op=('<'|'<='|'>='|'>'|'!='|'==') right = exp_arit                                                                                                { $p = expresion.NewOperacion($left.p, $op.text, $right.p, false, "-1", "-1",                        $op.line, localctx.(*Exp_aritContext).GetOp().GetColumn()) }      
+  | TK_PARA left = exp_arit tipo_left=('as f64'|'as i64') TK_PARC op=('<'|'<='|'>='|'>'|'!='|'==') right = exp_arit                                                  { $p = expresion.NewOperacion($left.p, $op.text, $right.p, false, $tipo_left.text, "-1",             $op.line, localctx.(*Exp_aritContext).GetOp().GetColumn()) }
+  | left = exp_arit op=('<'|'<='|'>='|'>'|'!='|'==') TK_PARA right = exp_arit tipo_right=('as f64'|'as i64') TK_PARC                                                 { $p = expresion.NewOperacion($left.p, $op.text, $right.p, false, "-1", $tipo_right.text,            $op.line, localctx.(*Exp_aritContext).GetOp().GetColumn()) }
+  | TK_PARA left = exp_arit tipo_left=('as f64'|'as i64') TK_PARC op=('<'|'<='|'>='|'>'|'!='|'==') TK_PARA right = exp_arit tipo_right=('as f64'|'as i64') TK_PARC   { $p = expresion.NewOperacion($left.p, $op.text, $right.p, false, $tipo_left.text, $tipo_right.text, $op.line, localctx.(*Exp_aritContext).GetOp().GetColumn()) }
   | left = exp_arit op=('&&'|'||') right = exp_arit                                                                                                             { $p = expresion.NewOperacion($left.p, $op.text, $right.p, false, "-1", "-1",                        $op.line, localctx.(*Exp_aritContext).GetOp().GetColumn()) }   
 
   | op=('!'|'-') expression                                                                                                                                     { $p = expresion.NewOperacion($expression.p, $op.text, nil,true, "-1", "-1",                         $op.line, localctx.(*Exp_aritContext).GetOp().GetColumn()) }      

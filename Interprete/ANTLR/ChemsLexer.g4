@@ -11,7 +11,9 @@ R_LET:          'let';
 R_MUT:          'mut';
 R_INT:          'i64';
 R_FLOAT:        'f64';
-R_STRING:     'String';
+R_STRING:       'String';
+R_IF:           'if';
+R_ELSE:         'else';
 
 // P_IF:       'if';
 // P_WHILE:    'while';
@@ -31,6 +33,7 @@ TK_PUNTOCOMA:    ';';
 TK_COMA:         ',';
 TK_DOSPUNTOS:    ':';
 TK_IGUAL:        '=';
+TK_IGUALIGUAL:        '==';
 TK_MAYORIGUAL:   '>=';
 TK_MENORIGUAL:   '<=';
 TK_DIFIGUAL:     '!=';

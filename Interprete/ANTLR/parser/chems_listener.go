@@ -23,6 +23,12 @@ type ChemsListener interface {
 	// EnterInstr_asignacion is called when entering the instr_asignacion production.
 	EnterInstr_asignacion(c *Instr_asignacionContext)
 
+	// EnterInstr_if is called when entering the instr_if production.
+	EnterInstr_if(c *Instr_ifContext)
+
+	// EnterInstr_else_if is called when entering the instr_else_if production.
+	EnterInstr_else_if(c *Instr_else_ifContext)
+
 	// EnterInstr_tipo is called when entering the instr_tipo production.
 	EnterInstr_tipo(c *Instr_tipoContext)
 
@@ -49,6 +55,12 @@ type ChemsListener interface {
 
 	// ExitInstr_asignacion is called when exiting the instr_asignacion production.
 	ExitInstr_asignacion(c *Instr_asignacionContext)
+
+	// ExitInstr_if is called when exiting the instr_if production.
+	ExitInstr_if(c *Instr_ifContext)
+
+	// ExitInstr_else_if is called when exiting the instr_else_if production.
+	ExitInstr_else_if(c *Instr_else_ifContext)
 
 	// ExitInstr_tipo is called when exiting the instr_tipo production.
 	ExitInstr_tipo(c *Instr_tipoContext)

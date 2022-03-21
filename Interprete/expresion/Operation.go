@@ -27,10 +27,6 @@ func NewOperacion(left interfaces.Expresion, Operator string, right interfaces.E
 
 func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Symbol {
 	
-	fmt.Println("opeation")
-	fmt.Println(p.Row)
-	fmt.Println(p.Column)
-
 
 	var exp_left interfaces.Symbol
 	var exp_right interfaces.Symbol
@@ -461,6 +457,45 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 
 			}
 		}
+	
+	case "==":
+		{
+			auxType := interfaces.BOOLEAN
+			/* ************************************************************** INTEGER ************************************************************** */
+			if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as i64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(int) == int(exp_right.Valor.(float64))}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as i64"){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: int(exp_left.Valor.(float64)) == exp_right.Valor.(int)}
+
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(int) == exp_right.Valor.(int)}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as i64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as i64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: int(exp_left.Valor.(float64)) == int(exp_right.Valor.(float64))}
+			
+			/* ************************************************************** FLOAT ************************************************************** */
+			}else if (exp_left.Tipo == interfaces.INTEGER && p.type_left == "as f64") && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: float64(exp_left.Valor.(int)) == exp_right.Valor.(float64)}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && p.type_right == "as f64"){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(float64) == float64(exp_right.Valor.(int))}
+
+			}else if (exp_left.Tipo == interfaces.INTEGER && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.INTEGER && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: float64(exp_left.Valor.(int)) == float64(exp_right.Valor.(int))}
+
+			}else if (exp_left.Tipo == interfaces.FLOAT && (p.type_left == "as f64" || p.type_left == "-1")) && (exp_right.Tipo == interfaces.FLOAT && (p.type_right == "as f64" || p.type_right == "-1")){
+				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp_left.Valor.(float64) == exp_right.Valor.(float64)}
+
+			}else {
+				
+				excep := ast.NewException("Semantico","No es posible comparar !=.", p.Row, p.Column)
+				tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No es posible comparar !=.", Row: p.Row, Column: p.Column})
+				return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
+
+			}
+		}
+
 
 	case "&&":
 		{
