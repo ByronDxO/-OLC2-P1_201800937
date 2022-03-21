@@ -45,6 +45,12 @@ func (s *BaseChemsListener) EnterInstr_declaracion(ctx *Instr_declaracionContext
 // ExitInstr_declaracion is called when production instr_declaracion is exited.
 func (s *BaseChemsListener) ExitInstr_declaracion(ctx *Instr_declaracionContext) {}
 
+// EnterBlock_decla is called when production block_decla is entered.
+func (s *BaseChemsListener) EnterBlock_decla(ctx *Block_declaContext) {}
+
+// ExitBlock_decla is called when production block_decla is exited.
+func (s *BaseChemsListener) ExitBlock_decla(ctx *Block_declaContext) {}
+
 // EnterInstr_asignacion is called when production instr_asignacion is entered.
 func (s *BaseChemsListener) EnterInstr_asignacion(ctx *Instr_asignacionContext) {}
 
@@ -62,6 +68,18 @@ func (s *BaseChemsListener) EnterInstr_else_if(ctx *Instr_else_ifContext) {}
 
 // ExitInstr_else_if is called when production instr_else_if is exited.
 func (s *BaseChemsListener) ExitInstr_else_if(ctx *Instr_else_ifContext) {}
+
+// EnterInstr_ternario is called when production instr_ternario is entered.
+func (s *BaseChemsListener) EnterInstr_ternario(ctx *Instr_ternarioContext) {}
+
+// ExitInstr_ternario is called when production instr_ternario is exited.
+func (s *BaseChemsListener) ExitInstr_ternario(ctx *Instr_ternarioContext) {}
+
+// EnterInstr_else_if_ternario is called when production instr_else_if_ternario is entered.
+func (s *BaseChemsListener) EnterInstr_else_if_ternario(ctx *Instr_else_if_ternarioContext) {}
+
+// ExitInstr_else_if_ternario is called when production instr_else_if_ternario is exited.
+func (s *BaseChemsListener) ExitInstr_else_if_ternario(ctx *Instr_else_if_ternarioContext) {}
 
 // EnterInstr_tipo is called when production instr_tipo is entered.
 func (s *BaseChemsListener) EnterInstr_tipo(ctx *Instr_tipoContext) {}

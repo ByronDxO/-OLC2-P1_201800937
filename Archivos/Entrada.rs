@@ -229,8 +229,16 @@ fn main() {
 
     // println!("{}", true < 2)
 
-    let x : bool = true;
-    println!("{}", x);
+    // let x : bool = true;
+    // println!("{}", x);
+
+
+    // Ejemplo 4 - otra forma de ver la instrucción if como expresión
+    let x: i64 = 90;
+    let y = if x == 5 { 10 } else if x == 90 { 20} else { 15 };
+    println!("{}",y)
+
+
 
 
 }

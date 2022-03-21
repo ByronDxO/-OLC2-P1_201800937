@@ -10,24 +10,24 @@ import (
 )
 
 
-type If struct {
+type Ternario struct {
 
 	Condicion	interfaces.Expresion
-	InstrIf		*arrayList.List
-	InstrElse	*arrayList.List
+	InstrIf		interfaces.Expresion
+	InstrElse	interfaces.Expresion
 	InstrElseIf *arrayList.List
 	Row 		int
 
 }
 
 
-func NewIf(condicion interfaces.Expresion, instrIf *arrayList.List, instrElse *arrayList.List, instrElseIf *arrayList.List, row int) If {
-	instr := If{condicion, instrIf, instrElse, instrElseIf, row}
+func NewTernario(condicion interfaces.Expresion, instrIf interfaces.Expresion, instrElse interfaces.Expresion, instrElseIf *arrayList.List, row int) Ternario {
+	instr := Ternario{condicion, instrIf, instrElse, instrElseIf, row}
 	return instr
 }
 
 
-func (p If) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
+func (p Ternario) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Symbol {
 
 	var cond interfaces.Symbol
 	cond = p.Condicion.Interpretar(env, tree)
@@ -43,11 +43,11 @@ func (p If) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 			var newTable environment.Environment
 			newTable = environment.NewEnvironment(env.(environment.Environment))
 
-			for _, s := range p.InstrIf.ToArray() {
-				s.(interfaces.Instruction).Interpretar(newTable, tree)
+			var result interfaces.Symbol
+			result = p.InstrIf.Interpretar(newTable, tree)
 
-
-			}
+			return result
+			
 	
 
 		}else {
@@ -57,19 +57,23 @@ func (p If) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 				var newTable environment.Environment
 				newTable = environment.NewEnvironment(env.(environment.Environment))
 
-				for _, s := range p.InstrElse.ToArray() {
-					s.(interfaces.Instruction).Interpretar(newTable, tree)
-					
-				}
+				var result interfaces.Symbol
+				result = p.InstrElse.Interpretar(newTable, tree)
+				return result
+				
 				
 			}
 
 			if p.InstrElseIf != nil {
 
+				var result interfaces.Symbol
 				for _, s := range p.InstrElseIf.ToArray() {
-					s.(interfaces.Instruction).Interpretar(env, tree)
+					
+					result = s.(Ternario).Interpretar(env, tree)
 
 				}
+
+				return result
 			}
 
 		}
@@ -82,5 +86,5 @@ func (p If) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 	}
 
 
-	return cond.Valor
+	return cond
 }	

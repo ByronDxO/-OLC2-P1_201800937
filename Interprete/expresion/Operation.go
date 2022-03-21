@@ -522,6 +522,7 @@ func (p Aritmetica) Interpretar(env interface{}, tree *ast.Arbol) interfaces.Sym
 			}else if (exp_left.Tipo == interfaces.BOOLEAN) && (exp_right.Tipo == interfaces.BOOLEAN) {
 				exp1,_ := strconv.ParseBool(fmt.Sprintf("%v", exp_left.Valor))
 				exp2,_ := strconv.ParseBool(fmt.Sprintf("%v", exp_right.Valor))
+				fmt.Println(exp1)
 				return interfaces.Symbol{Id: "", Tipo: auxType, Valor: exp1 == exp2}
 
 			}else {
