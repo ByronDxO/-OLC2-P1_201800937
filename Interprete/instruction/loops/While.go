@@ -40,7 +40,9 @@ func (p While) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 				for _, s := range p.Instrucciones.ToArray() {
 					newInstr := s.(interfaces.Instruction).Interpretar(newTable, tree)
 					fmt.Println(reflect.TypeOf(newInstr))
-					if reflect.TypeOf(newInstr).String() == "transferencia.Break" { return nil }
+					if reflect.TypeOf(newInstr).String() == "transferencia.Break" 	 { return nil }
+					if reflect.TypeOf(newInstr).String() == "transferencia.Continue" { break }
+					if reflect.TypeOf(newInstr).String() == "transferencia.Return"   { return newInstr }
 
 				}
 

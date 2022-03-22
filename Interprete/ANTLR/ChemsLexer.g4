@@ -15,6 +15,7 @@ R_ELSE:         'else';
 R_MATCH:        'match';
 R_WHILE:        'while';
 R_BREAK:        'break';
+R_CONTINUE:     'continue';
 
 /* TIPOS */
 R_INT:          'i64';

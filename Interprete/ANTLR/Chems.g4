@@ -48,7 +48,8 @@ instruccion returns [interfaces.Instruction instr]
   | instr_if                      { $instr = $instr_if.instr            } 
   | instr_match                   { $instr = $instr_match.instr         } 
   | instr_while                   { $instr = $instr_while.instr         }
-  | instr_break                   { $instr = $instr_break.instr }
+  | instr_break                   { $instr = $instr_break.instr         }
+  | instr_continue                { $instr = $instr_continue.instr      }
 ;
 
 
@@ -244,6 +245,11 @@ instr_while returns [interfaces.Instruction instr]
 /******************************** [TRANSFERENCIA][BREAK]    ********************************/
 instr_break returns [interfaces.Instruction instr]
   : R_BREAK end_instr                               { $instr = transferencia.NewBreak($R_BREAK.line, localctx.(*Instr_breakContext).Get_R_BREAK().GetColumn()) }
+;
+
+/******************************** [TRANSFERENCIA][CONTINUE]  ********************************/
+instr_continue returns [interfaces.Instruction instr]
+  : R_CONTINUE end_instr                            { $instr = transferencia.NewContinue($R_CONTINUE.line, localctx.(*Instr_continueContext).Get_R_CONTINUE().GetColumn()) }
 ;
 
 

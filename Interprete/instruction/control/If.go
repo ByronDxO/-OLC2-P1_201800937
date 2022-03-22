@@ -7,7 +7,6 @@ import (
 	"OLC2/Interprete/ast"
 	arrayList "github.com/colegno/arraylist"
 	"reflect"
-	"fmt"
 )
 
 
@@ -46,11 +45,10 @@ func (p If) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 
 			for _, s := range p.InstrIf.ToArray() {
 				newInstr := s.(interfaces.Instruction).Interpretar(newTable, tree)
-				fmt.Println("adentro del if")
-				if reflect.TypeOf(newInstr).String() == "transferencia.Break"{
-					return newInstr
-				}
 				
+				if reflect.TypeOf(newInstr).String() == "transferencia.Break"	 { return newInstr }
+				if reflect.TypeOf(newInstr).String() == "transferencia.Continue" { return newInstr }
+				if reflect.TypeOf(newInstr).String() == "transferencia.Return"   { return newInstr }
 
 			}
 	
@@ -63,7 +61,11 @@ func (p If) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 				newTable = environment.NewEnvironment(env.(environment.Environment))
 
 				for _, s := range p.InstrElse.ToArray() {
-					s.(interfaces.Instruction).Interpretar(newTable, tree)
+					newInstr := s.(interfaces.Instruction).Interpretar(newTable, tree)
+
+					if reflect.TypeOf(newInstr).String() == "transferencia.Break"	 { return newInstr }
+					if reflect.TypeOf(newInstr).String() == "transferencia.Continue" { return newInstr }
+					if reflect.TypeOf(newInstr).String() == "transferencia.Return"   { return newInstr }
 					
 				}
 				
@@ -72,7 +74,11 @@ func (p If) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 			if p.InstrElseIf != nil {
 
 				for _, s := range p.InstrElseIf.ToArray() {
-					s.(interfaces.Instruction).Interpretar(env, tree)
+					newInstr := s.(interfaces.Instruction).Interpretar(env, tree)
+				
+					if reflect.TypeOf(newInstr).String() == "transferencia.Break"	 { return newInstr }
+					if reflect.TypeOf(newInstr).String() == "transferencia.Continue" { return newInstr }
+					if reflect.TypeOf(newInstr).String() == "transferencia.Return"   { return newInstr }
 
 				}
 			}

@@ -89,6 +89,9 @@ type ChemsListener interface {
 	// EnterInstr_break is called when entering the instr_break production.
 	EnterInstr_break(c *Instr_breakContext)
 
+	// EnterInstr_continue is called when entering the instr_continue production.
+	EnterInstr_continue(c *Instr_continueContext)
+
 	// EnterInstr_tipo is called when entering the instr_tipo production.
 	EnterInstr_tipo(c *Instr_tipoContext)
 
@@ -181,6 +184,9 @@ type ChemsListener interface {
 
 	// ExitInstr_break is called when exiting the instr_break production.
 	ExitInstr_break(c *Instr_breakContext)
+
+	// ExitInstr_continue is called when exiting the instr_continue production.
+	ExitInstr_continue(c *Instr_continueContext)
 
 	// ExitInstr_tipo is called when exiting the instr_tipo production.
 	ExitInstr_tipo(c *Instr_tipoContext)
