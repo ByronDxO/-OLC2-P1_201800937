@@ -6,7 +6,7 @@ import (
 	"OLC2/Interprete/environment"
 	"OLC2/Interprete/ast"
 	arrayList "github.com/colegno/arraylist"
-	"fmt"
+	"reflect"
 )
 
 
@@ -25,7 +25,7 @@ func NewMatch(cond interfaces.Expresion, instrCase *arrayList.List, instrDefault
 }
 
 func (p Match) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
-	fmt.Println("entro a match")
+	
 	var newTable environment.Environment
 	newTable = environment.NewEnvironment(env.(environment.Environment))
 
@@ -45,8 +45,10 @@ func (p Match) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 						
 						boolCond = true
 						for _, j := range s.(Case).Instrucciones.ToArray() {
-							j.(interfaces.Instruction).Interpretar(newTable, tree)
-							
+							newInstr := j.(interfaces.Instruction).Interpretar(newTable, tree)
+							if reflect.TypeOf(newInstr).String() == "transferencia.Break"	 { return nil }
+							if reflect.TypeOf(newInstr).String() == "transferencia.Continue" { return nil }
+							if reflect.TypeOf(newInstr).String() == "transferencia.Return"   { return newInstr }
 						} 
 					} else{
 						ast.NewException("Semantico","Expresion repetida en Match.", p.Row, p.Row)
@@ -68,7 +70,11 @@ func (p Match) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 
 								boolCond = true
 								for _, j := range s.(Case).Instrucciones.ToArray() {
-									j.(interfaces.Instruction).Interpretar(newTable, tree)
+									newInstr := j.(interfaces.Instruction).Interpretar(newTable, tree)
+
+									if reflect.TypeOf(newInstr).String() == "transferencia.Break"	 { return nil }
+									if reflect.TypeOf(newInstr).String() == "transferencia.Continue" { return nil }
+									if reflect.TypeOf(newInstr).String() == "transferencia.Return"   { return newInstr }
 									
 								} 
 
@@ -102,7 +108,12 @@ func (p Match) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 						
 						boolCond = true
 						for _, j := range s.(Case).Instrucciones.ToArray() {
-							j.(interfaces.Instruction).Interpretar(newTable, tree)
+							newInstr := j.(interfaces.Instruction).Interpretar(newTable, tree)
+
+							if reflect.TypeOf(newInstr).String() == "transferencia.Break"	 { return nil }
+							if reflect.TypeOf(newInstr).String() == "transferencia.Continue" { return nil }
+							if reflect.TypeOf(newInstr).String() == "transferencia.Return"   { return newInstr }
+									
 							
 						} 
 					} else{
@@ -123,7 +134,12 @@ func (p Match) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 
 								boolCond = true
 								for _, j := range s.(Case).Instrucciones.ToArray() {
-									j.(interfaces.Instruction).Interpretar(newTable, tree)
+									newInstr := j.(interfaces.Instruction).Interpretar(newTable, tree)
+
+									if reflect.TypeOf(newInstr).String() == "transferencia.Break"	 { return nil }
+									if reflect.TypeOf(newInstr).String() == "transferencia.Continue" { return nil }
+									if reflect.TypeOf(newInstr).String() == "transferencia.Return"   { return newInstr }
+									
 									
 								} 
 
@@ -141,8 +157,13 @@ func (p Match) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 	}else if p.InstrCase == nil && p.InstrDefault != nil { // [<DEFAULT>]
 	
 		for s := 0; s < p.InstrDefault.Len(); s++ {
-			instr := p.InstrDefault.GetValue(s).(Default)
-			instr.Interpretar(env, tree)
+			newInstr := p.InstrDefault.GetValue(s).(Default)
+			newInstr.Interpretar(env, tree)
+			
+			if reflect.TypeOf(newInstr).String() == "transferencia.Break"	 { return nil }
+			if reflect.TypeOf(newInstr).String() == "transferencia.Continue" { return nil }
+			if reflect.TypeOf(newInstr).String() == "transferencia.Return"   { return newInstr }
+									
 
 		}
 	}
