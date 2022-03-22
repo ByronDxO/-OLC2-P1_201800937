@@ -45,12 +45,6 @@ func (s *BaseChemsListener) EnterInstr_declaracion(ctx *Instr_declaracionContext
 // ExitInstr_declaracion is called when production instr_declaracion is exited.
 func (s *BaseChemsListener) ExitInstr_declaracion(ctx *Instr_declaracionContext) {}
 
-// EnterBlock_decla is called when production block_decla is entered.
-func (s *BaseChemsListener) EnterBlock_decla(ctx *Block_declaContext) {}
-
-// ExitBlock_decla is called when production block_decla is exited.
-func (s *BaseChemsListener) ExitBlock_decla(ctx *Block_declaContext) {}
-
 // EnterInstr_asignacion is called when production instr_asignacion is entered.
 func (s *BaseChemsListener) EnterInstr_asignacion(ctx *Instr_asignacionContext) {}
 
@@ -80,6 +74,48 @@ func (s *BaseChemsListener) EnterInstr_else_if_ternario(ctx *Instr_else_if_terna
 
 // ExitInstr_else_if_ternario is called when production instr_else_if_ternario is exited.
 func (s *BaseChemsListener) ExitInstr_else_if_ternario(ctx *Instr_else_if_ternarioContext) {}
+
+// EnterInstr_match is called when production instr_match is entered.
+func (s *BaseChemsListener) EnterInstr_match(ctx *Instr_matchContext) {}
+
+// ExitInstr_match is called when production instr_match is exited.
+func (s *BaseChemsListener) ExitInstr_match(ctx *Instr_matchContext) {}
+
+// EnterInstr_case is called when production instr_case is entered.
+func (s *BaseChemsListener) EnterInstr_case(ctx *Instr_caseContext) {}
+
+// ExitInstr_case is called when production instr_case is exited.
+func (s *BaseChemsListener) ExitInstr_case(ctx *Instr_caseContext) {}
+
+// EnterList_case is called when production list_case is entered.
+func (s *BaseChemsListener) EnterList_case(ctx *List_caseContext) {}
+
+// ExitList_case is called when production list_case is exited.
+func (s *BaseChemsListener) ExitList_case(ctx *List_caseContext) {}
+
+// EnterBlock_case is called when production block_case is entered.
+func (s *BaseChemsListener) EnterBlock_case(ctx *Block_caseContext) {}
+
+// ExitBlock_case is called when production block_case is exited.
+func (s *BaseChemsListener) ExitBlock_case(ctx *Block_caseContext) {}
+
+// EnterList_expre_case is called when production list_expre_case is entered.
+func (s *BaseChemsListener) EnterList_expre_case(ctx *List_expre_caseContext) {}
+
+// ExitList_expre_case is called when production list_expre_case is exited.
+func (s *BaseChemsListener) ExitList_expre_case(ctx *List_expre_caseContext) {}
+
+// EnterInstr_default is called when production instr_default is entered.
+func (s *BaseChemsListener) EnterInstr_default(ctx *Instr_defaultContext) {}
+
+// ExitInstr_default is called when production instr_default is exited.
+func (s *BaseChemsListener) ExitInstr_default(ctx *Instr_defaultContext) {}
+
+// EnterBlock_default is called when production block_default is entered.
+func (s *BaseChemsListener) EnterBlock_default(ctx *Block_defaultContext) {}
+
+// ExitBlock_default is called when production block_default is exited.
+func (s *BaseChemsListener) ExitBlock_default(ctx *Block_defaultContext) {}
 
 // EnterInstr_tipo is called when production instr_tipo is entered.
 func (s *BaseChemsListener) EnterInstr_tipo(ctx *Instr_tipoContext) {}

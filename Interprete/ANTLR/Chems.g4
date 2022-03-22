@@ -40,28 +40,18 @@ instruccion returns [interfaces.Instruction instr]
   | instr_declaracion                                                 { $instr = $instr_declaracion.instr }
   | instr_asignacion                                                  { $instr = $instr_asignacion.instr  }
   | instr_if                                                          { $instr = $instr_if.instr } 
+  | instr_match                                                       { $instr = $instr_match.instr } 
 ;
 
 /******************************** [DECLARACION][VARIABLE] ********************************/
 
 instr_declaracion returns [interfaces.Instruction instr]
-  : R_LET R_MUT ID TK_IGUAL block_decla TK_PUNTOCOMA                           { $instr = variable.NewDeclaration($ID.text, interfaces.NULL,      $block_decla.p, true, false, false,  $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
-  | R_LET R_MUT ID TK_DOSPUNTOS instr_tipo TK_IGUAL block_decla TK_PUNTOCOMA   { $instr = variable.NewDeclaration($ID.text, $instr_tipo.tipo_exp, $block_decla.p, true, false, false,  $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
-  | R_LET ID TK_IGUAL block_decla TK_PUNTOCOMA                                 { $instr = variable.NewDeclaration($ID.text, interfaces.NULL,      $block_decla.p, false, false, false, $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
-  | R_LET ID TK_DOSPUNTOS instr_tipo TK_IGUAL block_decla TK_PUNTOCOMA         { $instr = variable.NewDeclaration($ID.text, $instr_tipo.tipo_exp, $block_decla.p, false, false, false, $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
-  
-  // | R_LET R_MUT ID TK_IGUAL instr_ternario TK_PUNTOCOMA                           { $instr = variable.NewDeclaration($ID.text, interfaces.NULL,      $instr_ternario.p, true, false, false,  $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
-  // | R_LET R_MUT ID TK_DOSPUNTOS instr_tipo TK_IGUAL instr_ternario TK_PUNTOCOMA   { $instr = variable.NewDeclaration($ID.text, $instr_tipo.tipo_exp, $instr_ternario.p, true, false, false,  $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
-  // | R_LET ID TK_IGUAL instr_ternario TK_PUNTOCOMA                                 { $instr = variable.NewDeclaration($ID.text, interfaces.NULL,      $instr_ternario.p, false, false, false, $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
-  // | R_LET ID TK_DOSPUNTOS instr_tipo TK_IGUAL instr_ternario TK_PUNTOCOMA         { $instr = variable.NewDeclaration($ID.text, $instr_tipo.tipo_exp, $instr_ternario.p, false, false, false, $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
-  
-  
+  : R_LET R_MUT ID TK_IGUAL expression TK_PUNTOCOMA                           { $instr = variable.NewDeclaration($ID.text, interfaces.NULL,      $expression.p, true, false, false,  $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
+  | R_LET R_MUT ID TK_DOSPUNTOS instr_tipo TK_IGUAL expression TK_PUNTOCOMA   { $instr = variable.NewDeclaration($ID.text, $instr_tipo.tipo_exp, $expression.p, true, false, false,  $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
+  | R_LET ID TK_IGUAL expression TK_PUNTOCOMA                                 { $instr = variable.NewDeclaration($ID.text, interfaces.NULL,      $expression.p, false, false, false, $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
+  | R_LET ID TK_DOSPUNTOS instr_tipo TK_IGUAL expression TK_PUNTOCOMA         { $instr = variable.NewDeclaration($ID.text, $instr_tipo.tipo_exp, $expression.p, false, false, false, $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
 ;
 
-block_decla returns [interfaces.Expresion p]
-  : expression          {$p = $expression.p }
-  | instr_ternario      {$p = $instr_ternario.p }
-;
 
 /******************************** [ASIGNACION][VARIABLE] ********************************/
 
@@ -109,6 +99,70 @@ instr_else_if_ternario returns [*arrayList.List l]
 ;
 
 
+/******************************** [CONTROL][MATCH] ********************************/
+
+instr_match returns [interfaces.Instruction instr]
+  : R_MATCH expression TK_LLAVEA list_case block_default TK_LLAVEC        { $instr = control.NewMatch($expression.p, $list_case.l, $block_default.l, $R_MATCH.line ) }
+  | R_MATCH expression TK_LLAVEA block_default TK_LLAVEC                  { $instr = control.NewMatch($expression.p, nil, $block_default.l, $R_MATCH.line) }
+;
+
+/*  CASE  */
+instr_case returns [interfaces.Expresion instr]
+  : list_expre_case TK_IGUALMAYOR TK_LLAVEA instrucciones TK_LLAVEC            { $instr = control.NewCase(nil, $list_expre_case.l, $instrucciones.l) }
+  // | block_case TK_IGUALMAYOR instruccion TK_COMA                            { $instr = control.NewCase(nil, $block_case.p, $instruccion.instr) }
+;
+
+
+list_case returns [*arrayList.List l]
+  @init{
+    $l =  arrayList.New()
+  }
+  : e += instr_case+  {
+        listInt := localctx.(*List_caseContext).GetE()
+        for _, e := range listInt {
+            $l.Add(e.GetInstr())
+        }
+    }
+;
+
+
+
+
+block_case returns [interfaces.Expresion instr]
+  : expression TK_BARRA                                                         { $instr =  control.NewCase($expression.p, nil, nil)}
+  | expression                                                                  { $instr =  control.NewCase($expression.p, nil, nil)}
+;
+
+list_expre_case returns [*arrayList.List l]
+  @init{
+    $l =  arrayList.New()
+  }
+  : e += block_case+  {
+        listInt := localctx.(*List_expre_caseContext).GetE()
+        for _, e := range listInt {
+            $l.Add(e.GetInstr())
+        }
+    }
+;
+
+/*  DEFAULT  */
+instr_default returns [interfaces.Instruction instr]
+  : TK_GUIONBAJO TK_LLAVEA instrucciones TK_LLAVEC           { $instr = control.NewDefault($instrucciones.l) }
+  // | TK_GUIONBAJO TK_IGUALMAYOR instruccion                     { $instr = control.NewDefault($instruccion.instr) }
+;
+
+block_default returns [*arrayList.List l]
+  @init{
+    $l =  arrayList.New()
+  }
+  : e += instr_default+  {
+        listInt := localctx.(*Block_defaultContext).GetE()
+        for _, e := range listInt {
+            $l.Add(e.GetInstr())
+        }
+    }
+;
+
 
 /******************************** [TIPO] ********************************/
 instr_tipo returns [interfaces.TipoExpresion tipo_exp]
@@ -146,7 +200,7 @@ exp_arit returns [interfaces.Expresion p]
   
 
   | primitivo                                                                                                                                                   { $p = $primitivo.p}
-  | TK_PARA expression TK_PARC                                                                                                                                  { $p = $expression.p}
+  | TK_PARA expression TK_PARC                                                                                                                          { $p = $expression.p}
 ;
 
 
@@ -179,5 +233,7 @@ primitivo returns[interfaces.Expresion p]
             }
 
     |ID       { $p = variable.NewIdentifier($ID.text, $ID.line, localctx.(*PrimitivoContext).Get_ID().GetColumn()) }
+
+    | instr_ternario      {$p = $instr_ternario.p } 
     
 ;

@@ -234,10 +234,30 @@ fn main() {
 
 
     // Ejemplo 4 - otra forma de ver la instrucción if como expresión
+
     let x: i64 = 90;
     let y = if x == 5 { 10 } else if x == 90 { 20} else { 15 };
-    println!("{}",y)
+    println!("{}",y);
+    println!("{}", (if x == 5 { 10 } else if x == 90 { 20} else { 15 }) != 20);
 
+    let numero = 15;
+
+    match numero {
+        
+        1 | 15 | 3 => {
+            let p = 100;
+            println!("Rango de 1 a 3");
+            println!("{}", p);
+        }
+        
+        6 | 7 | 8 => println!("Rango de 6 a 8"),
+        
+        _ => {
+            println!("Resto de casos");
+            println!("Resto de casos");
+        
+        } //brazo por defecto
+    }
 
 
 

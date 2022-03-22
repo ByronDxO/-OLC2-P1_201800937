@@ -12,6 +12,7 @@ R_LET:          'let';
 R_MUT:          'mut';
 R_IF:           'if';
 R_ELSE:         'else';
+R_MATCH:        'match';
 
 /* TIPOS */
 R_INT:          'i64';
@@ -40,6 +41,7 @@ TK_DOSPUNTOS:    ':';
 TK_IGUAL:        '=';
 TK_IGUALIGUAL:   '==';
 TK_MAYORIGUAL:   '>=';
+TK_IGUALMAYOR:   '=>';
 TK_MENORIGUAL:   '<=';
 TK_DIFIGUAL:     '!=';
 TK_MAYOR:        '>';
@@ -57,7 +59,9 @@ TK_CORA:         '[';
 TK_CORC:         ']';
 TK_AND:          '&&';
 TK_OR:           '||';
+TK_BARRA:        '|';
 TK_NOT:          '!';
+TK_GUIONBAJO:    '_ =>';
 
 
 WHITESPACE: [ \r\n\t]+ -> skip;
