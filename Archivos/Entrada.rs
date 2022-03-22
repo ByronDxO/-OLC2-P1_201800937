@@ -234,7 +234,7 @@ fn main() {
 
 
     // Ejemplo 4 - otra forma de ver la instrucción if como expresión
-
+    /*
     let x: i64 = 90;
     let y = if x == 5 { 10 } else if x == 90 { 20} else { 15 };
     println!("{}",y);
@@ -259,6 +259,20 @@ fn main() {
         } //brazo por defecto
     }
 
+    */
+    
+    let x = 5;
+    println!("{}", x);
+    let num_cadena = match x {
+        1 => "uno",
+        2 => "dos",
+        3 => "tres",
+        4 => "cuatro",
+        5 => "cinco",
+        _ => "otra cosa",
+     
+    };
 
 
+    println!("{}", num_cadena);
 }

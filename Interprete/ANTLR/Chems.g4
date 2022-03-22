@@ -34,14 +34,25 @@ instrucciones returns [*arrayList.List l]
     }
 ;
 
+end_instr returns [int v]
+  : TK_PUNTOCOMA            { $v = 1}
+  |                         { $v = 0}
+;
+
 instruccion returns [interfaces.Instruction instr]
+  : instr_println end_instr       { $instr = $instr_println.instr }
+  | instr_declaracion             { $instr = $instr_declaracion.instr }
+  | instr_asignacion              { $instr = $instr_asignacion.instr  }
+  | instr_if                      { $instr = $instr_if.instr } 
+  | instr_match                   { $instr = $instr_match.instr } 
+;
+
+
+/******************************** [PRINTLN!] ********************************/
+instr_println returns [interfaces.Instruction instr]
   : R_PRINTLN TK_PARA expression TK_PARC TK_PUNTOCOMA                 { $instr = instruction.PRINTLN($expression.p, "-1") }
   | R_PRINTLN TK_PARA STRING TK_COMA expression TK_PARC TK_PUNTOCOMA  { $instr = instruction.PRINTLN($expression.p, $STRING.text[1:len($STRING.text)-1]) }
-  | instr_declaracion                                                 { $instr = $instr_declaracion.instr }
-  | instr_asignacion                                                  { $instr = $instr_asignacion.instr  }
-  | instr_if                                                          { $instr = $instr_if.instr } 
-  | instr_match                                                       { $instr = $instr_match.instr } 
-;
+;  
 
 /******************************** [DECLARACION][VARIABLE] ********************************/
 
@@ -108,10 +119,23 @@ instr_match returns [interfaces.Instruction instr]
 
 /*  CASE  */
 instr_case returns [interfaces.Expresion instr]
-  : list_expre_case TK_IGUALMAYOR TK_LLAVEA instrucciones TK_LLAVEC            { $instr = control.NewCase(nil, $list_expre_case.l, $instrucciones.l) }
-  // | block_case TK_IGUALMAYOR instruccion TK_COMA                            { $instr = control.NewCase(nil, $block_case.p, $instruccion.instr) }
+  : list_expre_case TK_IGUALMAYOR TK_LLAVEA instrucciones TK_LLAVEC     { $instr = control.NewCase(nil, $list_expre_case.l, $instrucciones.l) }
+  | list_expre_case TK_IGUALMAYOR block_instr_match TK_COMA             { $instr = control.NewCase(nil, $list_expre_case.l, $block_instr_match.l) }
 ;
 
+
+
+block_instr_match returns [*arrayList.List l]
+  @init{
+    $l =  arrayList.New()
+  }
+  : list +=instruccion   {
+        listInt := localctx.(*Block_instr_matchContext).GetList()
+        for _, e := range listInt {
+            $l.Add(e.GetInstr())
+        }
+    }
+;
 
 list_case returns [*arrayList.List l]
   @init{
@@ -125,14 +149,7 @@ list_case returns [*arrayList.List l]
     }
 ;
 
-
-
-
-block_case returns [interfaces.Expresion instr]
-  : expression TK_BARRA                                                         { $instr =  control.NewCase($expression.p, nil, nil)}
-  | expression                                                                  { $instr =  control.NewCase($expression.p, nil, nil)}
-;
-
+/* List Expression Case */
 list_expre_case returns [*arrayList.List l]
   @init{
     $l =  arrayList.New()
@@ -145,10 +162,15 @@ list_expre_case returns [*arrayList.List l]
     }
 ;
 
+block_case returns [interfaces.Expresion instr]
+  : expression TK_BARRA                                                         { $instr =  control.NewCase($expression.p, nil, nil)}
+  | expression                                                                  { $instr =  control.NewCase($expression.p, nil, nil)}
+;
+
 /*  DEFAULT  */
 instr_default returns [interfaces.Instruction instr]
   : TK_GUIONBAJO TK_LLAVEA instrucciones TK_LLAVEC           { $instr = control.NewDefault($instrucciones.l) }
-  // | TK_GUIONBAJO TK_IGUALMAYOR instruccion                     { $instr = control.NewDefault($instruccion.instr) }
+  | TK_GUIONBAJO block_instr_match TK_COMA                   { $instr = control.NewDefault($block_instr_match.l) }
 ;
 
 block_default returns [*arrayList.List l]
@@ -162,6 +184,55 @@ block_default returns [*arrayList.List l]
         }
     }
 ;
+
+/******************************** [CONTROL][MATCH][TERNARIO] ********************************/
+instr_match_ter returns [interfaces.Expresion instr]
+  : R_MATCH expression TK_LLAVEA list_case_ternario instr_default_ter TK_LLAVEC    { $instr = control.NewTerMatch($expression.p, $list_case_ternario.l, $instr_default_ter.instr, $R_MATCH.line ) }
+  | R_MATCH expression TK_LLAVEA instr_default_ter TK_LLAVEC                       { $instr = control.NewTerMatch($expression.p, nil, $instr_default_ter.instr, $R_MATCH.line) }
+;
+
+/*  CASE  */
+instr_case_ter returns [interfaces.Expresion instr]
+  : list_expre_case_ter TK_IGUALMAYOR expression TK_COMA                               { $instr = control.NewCaseTer(nil, $list_expre_case_ter.l, $expression.p) }
+;
+
+
+list_case_ternario returns [*arrayList.List l]
+  @init{
+    $l =  arrayList.New()
+  }
+  : e += instr_case_ter+  {
+        listInt := localctx.(*List_case_ternarioContext).GetE()
+        for _, e := range listInt {
+            $l.Add(e.GetInstr())
+        }
+    }
+;
+
+/* List Expression Case */
+list_expre_case_ter returns [*arrayList.List l]
+  @init{
+    $l =  arrayList.New()
+  }
+  : e += block_case_ter+  {
+        listInt := localctx.(*List_expre_case_terContext).GetE()
+        for _, e := range listInt {
+            $l.Add(e.GetInstr())
+        }
+    }
+;
+
+block_case_ter returns [interfaces.Expresion instr]
+  : expression TK_BARRA                                                         { $instr =  control.NewCaseTer($expression.p, nil, nil)}
+  | expression                                                                  { $instr =  control.NewCaseTer($expression.p, nil, nil)}
+;
+
+
+/*  DEFAULT  */
+instr_default_ter returns [interfaces.Expresion instr]
+  : TK_GUIONBAJO expression TK_COMA                   { $instr = control.NewDefaultTer($expression.p) }
+;
+
 
 
 /******************************** [TIPO] ********************************/
@@ -235,5 +306,6 @@ primitivo returns[interfaces.Expresion p]
     |ID       { $p = variable.NewIdentifier($ID.text, $ID.line, localctx.(*PrimitivoContext).Get_ID().GetColumn()) }
 
     | instr_ternario      {$p = $instr_ternario.p } 
+    | instr_match_ter     {$p = $instr_match_ter.instr }
     
 ;

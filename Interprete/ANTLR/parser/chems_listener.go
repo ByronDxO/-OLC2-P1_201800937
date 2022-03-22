@@ -14,8 +14,14 @@ type ChemsListener interface {
 	// EnterInstrucciones is called when entering the instrucciones production.
 	EnterInstrucciones(c *InstruccionesContext)
 
+	// EnterEnd_instr is called when entering the end_instr production.
+	EnterEnd_instr(c *End_instrContext)
+
 	// EnterInstruccion is called when entering the instruccion production.
 	EnterInstruccion(c *InstruccionContext)
+
+	// EnterInstr_println is called when entering the instr_println production.
+	EnterInstr_println(c *Instr_printlnContext)
 
 	// EnterInstr_declaracion is called when entering the instr_declaracion production.
 	EnterInstr_declaracion(c *Instr_declaracionContext)
@@ -41,20 +47,41 @@ type ChemsListener interface {
 	// EnterInstr_case is called when entering the instr_case production.
 	EnterInstr_case(c *Instr_caseContext)
 
+	// EnterBlock_instr_match is called when entering the block_instr_match production.
+	EnterBlock_instr_match(c *Block_instr_matchContext)
+
 	// EnterList_case is called when entering the list_case production.
 	EnterList_case(c *List_caseContext)
 
-	// EnterBlock_case is called when entering the block_case production.
-	EnterBlock_case(c *Block_caseContext)
-
 	// EnterList_expre_case is called when entering the list_expre_case production.
 	EnterList_expre_case(c *List_expre_caseContext)
+
+	// EnterBlock_case is called when entering the block_case production.
+	EnterBlock_case(c *Block_caseContext)
 
 	// EnterInstr_default is called when entering the instr_default production.
 	EnterInstr_default(c *Instr_defaultContext)
 
 	// EnterBlock_default is called when entering the block_default production.
 	EnterBlock_default(c *Block_defaultContext)
+
+	// EnterInstr_match_ter is called when entering the instr_match_ter production.
+	EnterInstr_match_ter(c *Instr_match_terContext)
+
+	// EnterInstr_case_ter is called when entering the instr_case_ter production.
+	EnterInstr_case_ter(c *Instr_case_terContext)
+
+	// EnterList_case_ternario is called when entering the list_case_ternario production.
+	EnterList_case_ternario(c *List_case_ternarioContext)
+
+	// EnterList_expre_case_ter is called when entering the list_expre_case_ter production.
+	EnterList_expre_case_ter(c *List_expre_case_terContext)
+
+	// EnterBlock_case_ter is called when entering the block_case_ter production.
+	EnterBlock_case_ter(c *Block_case_terContext)
+
+	// EnterInstr_default_ter is called when entering the instr_default_ter production.
+	EnterInstr_default_ter(c *Instr_default_terContext)
 
 	// EnterInstr_tipo is called when entering the instr_tipo production.
 	EnterInstr_tipo(c *Instr_tipoContext)
@@ -74,8 +101,14 @@ type ChemsListener interface {
 	// ExitInstrucciones is called when exiting the instrucciones production.
 	ExitInstrucciones(c *InstruccionesContext)
 
+	// ExitEnd_instr is called when exiting the end_instr production.
+	ExitEnd_instr(c *End_instrContext)
+
 	// ExitInstruccion is called when exiting the instruccion production.
 	ExitInstruccion(c *InstruccionContext)
+
+	// ExitInstr_println is called when exiting the instr_println production.
+	ExitInstr_println(c *Instr_printlnContext)
 
 	// ExitInstr_declaracion is called when exiting the instr_declaracion production.
 	ExitInstr_declaracion(c *Instr_declaracionContext)
@@ -101,20 +134,41 @@ type ChemsListener interface {
 	// ExitInstr_case is called when exiting the instr_case production.
 	ExitInstr_case(c *Instr_caseContext)
 
+	// ExitBlock_instr_match is called when exiting the block_instr_match production.
+	ExitBlock_instr_match(c *Block_instr_matchContext)
+
 	// ExitList_case is called when exiting the list_case production.
 	ExitList_case(c *List_caseContext)
 
-	// ExitBlock_case is called when exiting the block_case production.
-	ExitBlock_case(c *Block_caseContext)
-
 	// ExitList_expre_case is called when exiting the list_expre_case production.
 	ExitList_expre_case(c *List_expre_caseContext)
+
+	// ExitBlock_case is called when exiting the block_case production.
+	ExitBlock_case(c *Block_caseContext)
 
 	// ExitInstr_default is called when exiting the instr_default production.
 	ExitInstr_default(c *Instr_defaultContext)
 
 	// ExitBlock_default is called when exiting the block_default production.
 	ExitBlock_default(c *Block_defaultContext)
+
+	// ExitInstr_match_ter is called when exiting the instr_match_ter production.
+	ExitInstr_match_ter(c *Instr_match_terContext)
+
+	// ExitInstr_case_ter is called when exiting the instr_case_ter production.
+	ExitInstr_case_ter(c *Instr_case_terContext)
+
+	// ExitList_case_ternario is called when exiting the list_case_ternario production.
+	ExitList_case_ternario(c *List_case_ternarioContext)
+
+	// ExitList_expre_case_ter is called when exiting the list_expre_case_ter production.
+	ExitList_expre_case_ter(c *List_expre_case_terContext)
+
+	// ExitBlock_case_ter is called when exiting the block_case_ter production.
+	ExitBlock_case_ter(c *Block_case_terContext)
+
+	// ExitInstr_default_ter is called when exiting the instr_default_ter production.
+	ExitInstr_default_ter(c *Instr_default_terContext)
 
 	// ExitInstr_tipo is called when exiting the instr_tipo production.
 	ExitInstr_tipo(c *Instr_tipoContext)
