@@ -48,8 +48,9 @@ func (p Assignment) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 	var result interfaces.Symbol
 	result = p.Expresion.Interpretar(env, tree)
 
-	if symbol.IsMut {
-		env.(environment.Environment).SetSymbol(p.Id, result)
+	if symbol.IsMut  || result.IsMut{
+		result.IsMut = true
+		env.(environment.Environment).SetSymbol(p.Id, result, true)
 	}else {
 		excep := ast.NewException("Semantico","No se puede asignar a " + p.Id + ", no es mutable.", p.Row, p.Column)
 		tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "No se puede asignar a " + p.Id + ", no es mutable.", Row: p.Row, Column: p.Column})

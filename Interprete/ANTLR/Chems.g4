@@ -13,6 +13,7 @@ options {
     import "OLC2/Interprete/instruction"
     import "OLC2/Interprete/instruction/variable"
     import "OLC2/Interprete/instruction/control"
+    import "OLC2/Interprete/instruction/loops"
     import arrayList "github.com/colegno/arraylist"
     
 }
@@ -40,11 +41,12 @@ end_instr returns [int v]
 ;
 
 instruccion returns [interfaces.Instruction instr]
-  : instr_println end_instr       { $instr = $instr_println.instr }
-  | instr_declaracion             { $instr = $instr_declaracion.instr }
-  | instr_asignacion              { $instr = $instr_asignacion.instr  }
-  | instr_if                      { $instr = $instr_if.instr } 
-  | instr_match                   { $instr = $instr_match.instr } 
+  : instr_println end_instr       { $instr = $instr_println.instr       }
+  | instr_declaracion             { $instr = $instr_declaracion.instr   }
+  | instr_asignacion              { $instr = $instr_asignacion.instr    }
+  | instr_if                      { $instr = $instr_if.instr            } 
+  | instr_match                   { $instr = $instr_match.instr         } 
+  | instr_while                   { $instr = $instr_while.instr         }
 ;
 
 
@@ -234,6 +236,11 @@ instr_default_ter returns [interfaces.Expresion instr]
 ;
 
 
+
+/******************************** [LOOP][WHILE] ********************************/
+instr_while returns [interfaces.Instruction instr]
+  : R_WHILE expression TK_LLAVEA instrucciones TK_LLAVEC                           { $instr = loops.NewWhile($expression.p, $instrucciones.l) }
+;
 
 /******************************** [TIPO] ********************************/
 instr_tipo returns [interfaces.TipoExpresion tipo_exp]

@@ -45,14 +45,14 @@ func (env Environment) GetSymbol(id string) interfaces.Symbol {
 	return interfaces.Symbol{Id: "", Tipo: interfaces.NULL, Valor: interfaces.Symbol{Id: "", Tipo: interfaces.NULL, Valor: 0}}
 }
 
-func (env Environment) SetSymbol(id string, value interfaces.Symbol) interfaces.Symbol {
+func (env Environment) SetSymbol(id string, value interfaces.Symbol, mut bool) interfaces.Symbol {
 
 	var tmpEnv Environment
 	tmpEnv = env
 
 	for {
 		if variable, ok := tmpEnv.variable[id]; ok {
-			tmpEnv.variable[id] = interfaces.Symbol{Id: id, Tipo: variable.Tipo, Valor: value}
+			tmpEnv.variable[id] = interfaces.Symbol{Id: id, Tipo: variable.Tipo, Valor: value, IsMut:mut}
 			return variable
 		}
 

@@ -13,6 +13,7 @@ R_MUT:          'mut';
 R_IF:           'if';
 R_ELSE:         'else';
 R_MATCH:        'match';
+R_WHILE:        'while';
 
 /* TIPOS */
 R_INT:          'i64';
