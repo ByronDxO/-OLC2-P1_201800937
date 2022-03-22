@@ -6,7 +6,8 @@ import (
 	"OLC2/Interprete/environment"
 	"OLC2/Interprete/ast"
 	arrayList "github.com/colegno/arraylist"
-	
+	"reflect"
+	"fmt"
 )
 
 
@@ -44,8 +45,12 @@ func (p If) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 			newTable = environment.NewEnvironment(env.(environment.Environment))
 
 			for _, s := range p.InstrIf.ToArray() {
-				s.(interfaces.Instruction).Interpretar(newTable, tree)
-
+				newInstr := s.(interfaces.Instruction).Interpretar(newTable, tree)
+				fmt.Println("adentro del if")
+				if reflect.TypeOf(newInstr).String() == "transferencia.Break"{
+					return newInstr
+				}
+				
 
 			}
 	

@@ -14,6 +14,7 @@ options {
     import "OLC2/Interprete/instruction/variable"
     import "OLC2/Interprete/instruction/control"
     import "OLC2/Interprete/instruction/loops"
+    import "OLC2/Interprete/instruction/transferencia"
     import arrayList "github.com/colegno/arraylist"
     
 }
@@ -47,6 +48,7 @@ instruccion returns [interfaces.Instruction instr]
   | instr_if                      { $instr = $instr_if.instr            } 
   | instr_match                   { $instr = $instr_match.instr         } 
   | instr_while                   { $instr = $instr_while.instr         }
+  | instr_break                   { $instr = $instr_break.instr }
 ;
 
 
@@ -57,7 +59,6 @@ instr_println returns [interfaces.Instruction instr]
 ;  
 
 /******************************** [DECLARACION][VARIABLE] ********************************/
-
 instr_declaracion returns [interfaces.Instruction instr]
   : R_LET R_MUT ID TK_IGUAL expression TK_PUNTOCOMA                           { $instr = variable.NewDeclaration($ID.text, interfaces.NULL,      $expression.p, true, false, false,  $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
   | R_LET R_MUT ID TK_DOSPUNTOS instr_tipo TK_IGUAL expression TK_PUNTOCOMA   { $instr = variable.NewDeclaration($ID.text, $instr_tipo.tipo_exp, $expression.p, true, false, false,  $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
@@ -67,7 +68,6 @@ instr_declaracion returns [interfaces.Instruction instr]
 
 
 /******************************** [ASIGNACION][VARIABLE] ********************************/
-
 instr_asignacion returns [interfaces.Instruction instr]
   : ID TK_IGUAL expression TK_PUNTOCOMA                                       { $instr = variable.NewAssignment($ID.text, $expression.p, $ID.line, localctx.(*Instr_asignacionContext).Get_ID().GetColumn()) }
 ;
@@ -235,12 +235,21 @@ instr_default_ter returns [interfaces.Expresion instr]
   : TK_GUIONBAJO expression TK_COMA                   { $instr = control.NewDefaultTer($expression.p) }
 ;
 
-
-
 /******************************** [LOOP][WHILE] ********************************/
 instr_while returns [interfaces.Instruction instr]
   : R_WHILE expression TK_LLAVEA instrucciones TK_LLAVEC                           { $instr = loops.NewWhile($expression.p, $instrucciones.l) }
 ;
+
+
+/******************************** [TRANSFERENCIA][BREAK]    ********************************/
+instr_break returns [interfaces.Instruction instr]
+  : R_BREAK end_instr                               { $instr = transferencia.NewBreak($R_BREAK.line, localctx.(*Instr_breakContext).Get_R_BREAK().GetColumn()) }
+;
+
+
+/******************************** [TRANSFERENCIA][CONTINUE] ********************************/
+/******************************** [TRANSFERENCIA][RETURN]   ********************************/
+
 
 /******************************** [TIPO] ********************************/
 instr_tipo returns [interfaces.TipoExpresion tipo_exp]

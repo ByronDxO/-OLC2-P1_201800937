@@ -6,7 +6,7 @@ import (
 	"OLC2/Interprete/environment"
 	"OLC2/Interprete/ast"
 	arrayList "github.com/colegno/arraylist"
-	// "reflect"
+	"reflect"
 	"fmt"
 	
 )
@@ -24,7 +24,6 @@ func NewWhile(cond interfaces.Expresion, instruccion *arrayList.List) While {
 func (p While) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 
 	var cond interfaces.Symbol
-	fmt.Println("en while")
 
 	for true {
 
@@ -39,11 +38,12 @@ func (p While) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 				newTable = environment.NewEnvironment(env.(environment.Environment))
 
 				for _, s := range p.Instrucciones.ToArray() {
-					s.(interfaces.Instruction).Interpretar(newTable, tree)
-					// fmt.Println(reflect.TypeOf(instr))
+					newInstr := s.(interfaces.Instruction).Interpretar(newTable, tree)
+					fmt.Println(reflect.TypeOf(newInstr))
+					if reflect.TypeOf(newInstr).String() == "transferencia.Break" { return nil }
 
 				}
-				
+
 			}else {
 				break
 			}
