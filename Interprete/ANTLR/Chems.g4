@@ -50,6 +50,7 @@ instruccion returns [interfaces.Instruction instr]
   | instr_while                   { $instr = $instr_while.instr         }
   | instr_break                   { $instr = $instr_break.instr         }
   | instr_continue                { $instr = $instr_continue.instr      }
+  | instr_loop                    { $instr = $instr_loop.instr          }
 ;
 
 
@@ -241,10 +242,20 @@ instr_while returns [interfaces.Instruction instr]
   : R_WHILE expression TK_LLAVEA instrucciones TK_LLAVEC                           { $instr = loops.NewWhile($expression.p, $instrucciones.l) }
 ;
 
+/******************************** [LOOP][LOOP] ********************************/
+instr_loop returns [interfaces.Instruction instr]
+  : R_LOOP TK_LLAVEA instrucciones TK_LLAVEC                           { $instr = loops.NewLoop($instrucciones.l) }
+;
+
+/******************************** [LOOP][LOOP][TERNARIO] ********************************/
+instr_loop_ternario returns [interfaces.Expresion instr]
+  : R_LOOP TK_LLAVEA instrucciones TK_LLAVEC                           { $instr = loops.NewLoopTernario($instrucciones.l) }
+;
 
 /******************************** [TRANSFERENCIA][BREAK]    ********************************/
 instr_break returns [interfaces.Instruction instr]
-  : R_BREAK end_instr                               { $instr = transferencia.NewBreak($R_BREAK.line, localctx.(*Instr_breakContext).Get_R_BREAK().GetColumn()) }
+  : R_BREAK end_instr                               { $instr = transferencia.NewBreak(nil, $R_BREAK.line, localctx.(*Instr_breakContext).Get_R_BREAK().GetColumn()) }
+  | R_BREAK expression end_instr                    { $instr = transferencia.NewBreak($expression.p, $R_BREAK.line, localctx.(*Instr_breakContext).Get_R_BREAK().GetColumn()) }
 ;
 
 /******************************** [TRANSFERENCIA][CONTINUE]  ********************************/
@@ -252,10 +263,10 @@ instr_continue returns [interfaces.Instruction instr]
   : R_CONTINUE end_instr                            { $instr = transferencia.NewContinue($R_CONTINUE.line, localctx.(*Instr_continueContext).Get_R_CONTINUE().GetColumn()) }
 ;
 
-
-/******************************** [TRANSFERENCIA][CONTINUE] ********************************/
-/******************************** [TRANSFERENCIA][RETURN]   ********************************/
-
+/******************************** [TRANSFERENCIA][RETURN]  ********************************/
+instr_return returns [interfaces.Instruction instr]
+  : R_RETURN expression end_instr                            { $instr = transferencia.NewReturn($expression.p, $R_RETURN.line, localctx.(*Instr_returnContext).Get_R_RETURN().GetColumn()) }
+;
 
 /******************************** [TIPO] ********************************/
 instr_tipo returns [interfaces.TipoExpresion tipo_exp]
@@ -329,5 +340,6 @@ primitivo returns[interfaces.Expresion p]
 
     | instr_ternario      {$p = $instr_ternario.p } 
     | instr_match_ter     {$p = $instr_match_ter.instr }
+    | instr_loop_ternario {$p = $instr_loop_ternario.instr }
     
 ;

@@ -86,11 +86,20 @@ type ChemsListener interface {
 	// EnterInstr_while is called when entering the instr_while production.
 	EnterInstr_while(c *Instr_whileContext)
 
+	// EnterInstr_loop is called when entering the instr_loop production.
+	EnterInstr_loop(c *Instr_loopContext)
+
+	// EnterInstr_loop_ternario is called when entering the instr_loop_ternario production.
+	EnterInstr_loop_ternario(c *Instr_loop_ternarioContext)
+
 	// EnterInstr_break is called when entering the instr_break production.
 	EnterInstr_break(c *Instr_breakContext)
 
 	// EnterInstr_continue is called when entering the instr_continue production.
 	EnterInstr_continue(c *Instr_continueContext)
+
+	// EnterInstr_return is called when entering the instr_return production.
+	EnterInstr_return(c *Instr_returnContext)
 
 	// EnterInstr_tipo is called when entering the instr_tipo production.
 	EnterInstr_tipo(c *Instr_tipoContext)
@@ -182,11 +191,20 @@ type ChemsListener interface {
 	// ExitInstr_while is called when exiting the instr_while production.
 	ExitInstr_while(c *Instr_whileContext)
 
+	// ExitInstr_loop is called when exiting the instr_loop production.
+	ExitInstr_loop(c *Instr_loopContext)
+
+	// ExitInstr_loop_ternario is called when exiting the instr_loop_ternario production.
+	ExitInstr_loop_ternario(c *Instr_loop_ternarioContext)
+
 	// ExitInstr_break is called when exiting the instr_break production.
 	ExitInstr_break(c *Instr_breakContext)
 
 	// ExitInstr_continue is called when exiting the instr_continue production.
 	ExitInstr_continue(c *Instr_continueContext)
+
+	// ExitInstr_return is called when exiting the instr_return production.
+	ExitInstr_return(c *Instr_returnContext)
 
 	// ExitInstr_tipo is called when exiting the instr_tipo production.
 	ExitInstr_tipo(c *Instr_tipoContext)

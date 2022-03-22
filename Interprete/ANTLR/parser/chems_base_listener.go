@@ -177,6 +177,18 @@ func (s *BaseChemsListener) EnterInstr_while(ctx *Instr_whileContext) {}
 // ExitInstr_while is called when production instr_while is exited.
 func (s *BaseChemsListener) ExitInstr_while(ctx *Instr_whileContext) {}
 
+// EnterInstr_loop is called when production instr_loop is entered.
+func (s *BaseChemsListener) EnterInstr_loop(ctx *Instr_loopContext) {}
+
+// ExitInstr_loop is called when production instr_loop is exited.
+func (s *BaseChemsListener) ExitInstr_loop(ctx *Instr_loopContext) {}
+
+// EnterInstr_loop_ternario is called when production instr_loop_ternario is entered.
+func (s *BaseChemsListener) EnterInstr_loop_ternario(ctx *Instr_loop_ternarioContext) {}
+
+// ExitInstr_loop_ternario is called when production instr_loop_ternario is exited.
+func (s *BaseChemsListener) ExitInstr_loop_ternario(ctx *Instr_loop_ternarioContext) {}
+
 // EnterInstr_break is called when production instr_break is entered.
 func (s *BaseChemsListener) EnterInstr_break(ctx *Instr_breakContext) {}
 
@@ -188,6 +200,12 @@ func (s *BaseChemsListener) EnterInstr_continue(ctx *Instr_continueContext) {}
 
 // ExitInstr_continue is called when production instr_continue is exited.
 func (s *BaseChemsListener) ExitInstr_continue(ctx *Instr_continueContext) {}
+
+// EnterInstr_return is called when production instr_return is entered.
+func (s *BaseChemsListener) EnterInstr_return(ctx *Instr_returnContext) {}
+
+// ExitInstr_return is called when production instr_return is exited.
+func (s *BaseChemsListener) ExitInstr_return(ctx *Instr_returnContext) {}
 
 // EnterInstr_tipo is called when production instr_tipo is entered.
 func (s *BaseChemsListener) EnterInstr_tipo(ctx *Instr_tipoContext) {}
