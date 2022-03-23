@@ -298,5 +298,12 @@ fn main() {
         print!("{ } ", z);
     }
     println!("");
-    print!("{ } ", z);
+    println!("{ } ", z);
+
+    let cadena = "OLC2";
+    for letra in cadena.chars() {
+    print!("{ } -", letra);
+    // Imprime O-L-C-2-
+    }
+    println!("");
 }

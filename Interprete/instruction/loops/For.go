@@ -34,6 +34,7 @@ func (p For) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 	var newTable, newTable2 environment.Environment
 	newTable = environment.NewEnvironment(env.(environment.Environment))
 	var cond bool = false
+
 	if p.Tipo == interfaces.INTEGER {
 		var left, right, temp interfaces.Symbol
 		left = p.Left.Interpretar(newTable, tree)
@@ -91,6 +92,61 @@ func (p For) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 			tree.AddException(ast.Exception{Tipo:excep.Tipo, Descripcion: excep.Descripcion, Row: excep.Row, Column: excep.Row})
 			return excep
 		}
+
+
+
+	} else if p.Tipo == interfaces.STRING {
+		
+		var left, temp interfaces.Symbol
+		var aux string = ""
+		left = p.Left.Interpretar(newTable, tree)
+		if left.Tipo == interfaces.EXCEPTION { return left }
+		
+		left.IsMut = true
+
+		if left.Tipo == interfaces.STRING {
+
+			symbol := env.(environment.Environment).GetSymbol(p.Id)
+
+			if symbol.Tipo == interfaces.NULL {
+				cond = true
+				env.(environment.Environment).AddSymbol(p.Id, left, left.Tipo, true)
+				symbol = env.(environment.Environment).GetSymbol(p.Id)
+				fmt.Println(symbol)
+			}else {
+				temp = symbol.Valor.(interfaces.Symbol)
+			}
+
+
+			for i := 0; i < len(left.Valor.(string)); i++ {
+				
+				newTable2 = environment.NewEnvironment(newTable)
+				aux = fmt.Sprintf("%v", left.Valor)
+				
+				env.(environment.Environment).SetSymbol(p.Id, interfaces.Symbol{p.Id,left.Tipo,string(aux[i]),true}, true)
+
+				for _, s := range p.Instrucciones.ToArray() {
+					newInstr := s.(interfaces.Instruction).Interpretar(newTable2, tree)
+
+					if reflect.TypeOf(newInstr).String() == "transferencia.Break" 	 { return nil }
+					if reflect.TypeOf(newInstr).String() == "transferencia.Continue" { break }
+					if reflect.TypeOf(newInstr).String() == "transferencia.Return"   { return newInstr }
+
+				}
+
+			}
+
+			if !cond {
+				env.(environment.Environment).SetSymbol(p.Id, temp, true)
+			}
+
+		}else {
+			excep := ast.NewException("Semantico","Tipo de Dato incorrecto en For (string).", p.Row, p.Column)
+			tree.AddException(ast.Exception{Tipo:excep.Tipo, Descripcion: excep.Descripcion, Row: excep.Row, Column: excep.Row})
+			return excep
+		}
+
 	}
+
 	return nil
 }
