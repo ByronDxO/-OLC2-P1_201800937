@@ -173,8 +173,8 @@ block_case returns [interfaces.Expresion instr]
 
 /*  DEFAULT  */
 instr_default returns [interfaces.Instruction instr]
-  : TK_GUIONBAJO TK_LLAVEA instrucciones TK_LLAVEC           { $instr = control.NewDefault($instrucciones.l) }
-  | TK_GUIONBAJO block_instr_match TK_COMA                   { $instr = control.NewDefault($block_instr_match.l) }
+  : ID TK_IGUALMAYOR TK_LLAVEA instrucciones TK_LLAVEC           { $instr = control.NewDefault($instrucciones.l) }
+  | ID TK_IGUALMAYOR block_instr_match TK_COMA                   { $instr = control.NewDefault($block_instr_match.l) }
 ;
 
 block_default returns [*arrayList.List l]
@@ -234,7 +234,7 @@ block_case_ter returns [interfaces.Expresion instr]
 
 /*  DEFAULT  */
 instr_default_ter returns [interfaces.Expresion instr]
-  : TK_GUIONBAJO expression TK_COMA                   { $instr = control.NewDefaultTer($expression.p) }
+  : ID TK_IGUALMAYOR expression TK_COMA                   { $instr = control.NewDefaultTer($expression.p) }
 ;
 
 /******************************** [LOOP][WHILE] ********************************/

@@ -268,7 +268,7 @@ fn main() {
         2 => "dos",
         3 => "tres",
         4 => "cuatro",
-        5 => "cinco",
+        5 => (if x == 5 { "cinco" } else if x == 90 { "else if" } else { "else" }),
         _ => "otra cosa",
      
     };

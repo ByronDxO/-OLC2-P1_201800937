@@ -66,7 +66,7 @@ TK_AND:          '&&';
 TK_OR:           '||';
 TK_BARRA:        '|';
 TK_NOT:          '!';
-TK_GUIONBAJO:    '_ =>';
+// TK_GUIONBAJO:    '_ =>';
 
 
 WHITESPACE: [ \r\n\t]+ -> skip;
