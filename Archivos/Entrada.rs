@@ -279,18 +279,18 @@ fn main() {
     println!("{}", num_cadena);
 
     // Ejemplo 3
-    // for n in 1..4 {
-    // print!("{ } ", n);
-    // }
-    // println!("");
+    for n in 1..4 {
+    print!("{ } ", n);
+    }
+    println!("");
 
-    // // Ejemplo 3 - cadena
-    // let ka: &str = "Hola Mundo!";
-    // for letra in ka.bytes() { // Recorre las letras de la cadena
-    // print!("{ } -", letra);
-    // // Imprime H-o-l-a- -M-u-n-d-o-!-
-    // }
-    // println!("");
+    // Ejemplo 3 - cadena
+    let ka: &str = "Hola Mundo!";
+    for letra in ka.bytes() { // Recorre las letras de la cadena
+    print!("{ } -", letra);
+    // Imprime H-o-l-a- -M-u-n-d-o-!-
+    }
+    println!("");
 
 
     // Ejemplo 3

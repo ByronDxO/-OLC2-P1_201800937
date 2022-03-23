@@ -225,6 +225,18 @@ func (s *BaseChemsListener) EnterInstr_tipo(ctx *Instr_tipoContext) {}
 // ExitInstr_tipo is called when production instr_tipo is exited.
 func (s *BaseChemsListener) ExitInstr_tipo(ctx *Instr_tipoContext) {}
 
+// EnterList_expression is called when production list_expression is entered.
+func (s *BaseChemsListener) EnterList_expression(ctx *List_expressionContext) {}
+
+// ExitList_expression is called when production list_expression is exited.
+func (s *BaseChemsListener) ExitList_expression(ctx *List_expressionContext) {}
+
+// EnterBlock_list_expression is called when production block_list_expression is entered.
+func (s *BaseChemsListener) EnterBlock_list_expression(ctx *Block_list_expressionContext) {}
+
+// ExitBlock_list_expression is called when production block_list_expression is exited.
+func (s *BaseChemsListener) ExitBlock_list_expression(ctx *Block_list_expressionContext) {}
+
 // EnterExpression is called when production expression is entered.
 func (s *BaseChemsListener) EnterExpression(ctx *ExpressionContext) {}
 

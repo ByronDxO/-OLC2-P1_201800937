@@ -110,6 +110,12 @@ type ChemsListener interface {
 	// EnterInstr_tipo is called when entering the instr_tipo production.
 	EnterInstr_tipo(c *Instr_tipoContext)
 
+	// EnterList_expression is called when entering the list_expression production.
+	EnterList_expression(c *List_expressionContext)
+
+	// EnterBlock_list_expression is called when entering the block_list_expression production.
+	EnterBlock_list_expression(c *Block_list_expressionContext)
+
 	// EnterExpression is called when entering the expression production.
 	EnterExpression(c *ExpressionContext)
 
@@ -220,6 +226,12 @@ type ChemsListener interface {
 
 	// ExitInstr_tipo is called when exiting the instr_tipo production.
 	ExitInstr_tipo(c *Instr_tipoContext)
+
+	// ExitList_expression is called when exiting the list_expression production.
+	ExitList_expression(c *List_expressionContext)
+
+	// ExitBlock_list_expression is called when exiting the block_list_expression production.
+	ExitBlock_list_expression(c *Block_list_expressionContext)
 
 	// ExitExpression is called when exiting the expression production.
 	ExitExpression(c *ExpressionContext)

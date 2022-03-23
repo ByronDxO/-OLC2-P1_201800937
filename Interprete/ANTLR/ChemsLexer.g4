@@ -4,6 +4,7 @@ lexer grammar ChemsLexer;
 // Tokens
 
 /* RESERVADAS */
+R_PRINT:        'print!';
 R_PRINTLN:      'println!';
 P_NUMBER:       'number';
 R_AS_DOUBLE:    'as f64';

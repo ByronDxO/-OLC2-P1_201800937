@@ -62,9 +62,10 @@ instr_main returns [interfaces.Instruction instr]
 
 /******************************** [PRINTLN!] ********************************/
 instr_println returns [interfaces.Instruction instr]
-  : R_PRINTLN TK_PARA expression TK_PARC TK_PUNTOCOMA                 { $instr = instruction.PRINTLN($expression.p, "-1") }
-  | R_PRINTLN TK_PARA STRING TK_COMA expression TK_PARC TK_PUNTOCOMA  { $instr = instruction.PRINTLN($expression.p, $STRING.text[1:len($STRING.text)-1]) }
+  : salto=('println!'|'print!') TK_PARA primitivo TK_PARC TK_PUNTOCOMA                           { $instr = instruction.PRINTLN(nil, "-1", $primitivo.p, $salto.text) }
+  | salto=('println!'|'print!') TK_PARA STRING TK_COMA list_expression TK_PARC TK_PUNTOCOMA      { $instr = instruction.PRINTLN($list_expression.l, $STRING.text[1:len($STRING.text)-1], nil, $salto.text) }
 ;  
+
 
 /******************************** [DECLARACION][VARIABLE] ********************************/
 instr_declaracion returns [interfaces.Instruction instr]
@@ -291,12 +292,28 @@ instr_tipo returns [interfaces.TipoExpresion tipo_exp]
   | R_BOOL      {$tipo_exp = interfaces.BOOLEAN}
 ;
 
+/******************************** [EXPRESIONES] ********************************/
+/* List Expression Case */
+list_expression returns [*arrayList.List l]
+  @init{
+    $l =  arrayList.New()
+  }
+  : e += block_list_expression+  {
+        listInt := localctx.(*List_expressionContext).GetE()
+        for _, e := range listInt {
+            $l.Add(e.GetP())
+        }
+    }
+;
+
+block_list_expression returns [interfaces.Expresion p]
+  : expression TK_COMA                    { $p =  instruction.NewListExpre($expression.p) }
+  | expression                            { $p =  instruction.NewListExpre($expression.p) }
+;
 
 expression returns [interfaces.Expresion p]
   : exp_arit            {$p = $exp_arit.p}
 ;
-
-
 
 exp_arit returns [interfaces.Expresion p]
   : left = exp_arit op=('*'|'/'|'%') right = exp_arit                                                                                                           { $p = expresion.NewOperacion($left.p, $op.text, $right.p, false, "-1", "-1",                        $op.line, localctx.(*Exp_aritContext).GetOp().GetColumn()) }
