@@ -47,17 +47,26 @@
         <form action="http://127.0.0.1:3000/interpretar" method="post" id="IDform">
             <header>
                 
-                <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+                <nav class="navbar navbar-expand-lg navbar-dark dark fixed-top">
                     <div class="container-fluid">
                         <a class="navbar-brand" href="http://127.0.0.1:3000">RUST </a>
                         
                         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                            <!-- <ul class="navbar-nav ms-md-auto"> -->
-                                <!-- <li class="nav-item"> -->
-                                    <button class="btn btn-outline-success">Interpretar</button>
-                                <!-- </li> -->
+                            <div>
+                                <button class="btn btn-outline-success">Interpretar </button>
+                            </div>
+                            <div>
+                                <li class="nav-item">
+                                    <a class="btn btn-outline-secondary" color="black" href="#tablaErroresSL">Tabla de Errores</a>
+                                </li>
+                            </div>
+                            <div>
+                                <li class="nav-item">
+                                    <a class="btn btn-outline-secondary" color="black" href="#tablaSimbolosSL">Tabla de Errores</a>
+                                </li>
+                            </div>
                             
-                            <!-- </ul> -->
+                                
                         </div>
                     </div>
                 </nav>
@@ -78,7 +87,10 @@
                             </h1>
                         </center>
                         {{ if (eq .CODE_INPUT "") }}
-                            <textarea name="editor" id="editor"></textarea>
+                            <textarea name="editor" id="editor">
+fn main() {
+    println!("hello World!")
+}</textarea>
                         {{ else }}
                             <textarea name="editor" id="editor">{{ .CODE_INPUT }}</textarea>
                         {{ end }}
@@ -101,6 +113,80 @@
                     </div>
                 </div>
             </div>
+
+            <br>
+            <div class="container-fluid mt-5" id="tablaErroresSL">
+        
+                <div class="tabla-report">
+                    <center>
+                        <h1>
+                            <font color="#ffffff" face="Times New Roman">
+                                TABLA DE ERRORES
+                            </font>
+                        </h1>
+                        
+                    </center>
+                    <table class="table table-dark table-hover shadow p-3 mb-5 bg-body rounded" id="tabla-reporte">
+                        <head>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Descripcion</th>
+                                <th>Ambito</th>
+                                <th>Fila</th>
+                                <th>Columna</th>
+                                <th>Fecha y Hora</th>
+                            </tr>
+                        </head>
+
+                        <tbody>
+                            {{ range .Tabla_Error }}
+                            
+                                <tr>
+                                    <td> {{ .Id          }}    </td>
+                                    <td> {{ .Tipo        }}   </td> 		
+                                    <td> {{ .Descripcion }}   </td> 
+                                    <td> {{ .Row         }}   </td>			
+                                    <td> {{ .Column      }}   </td> 		
+                                    <td> {{ .Time        }}   </td> 		
+                                </tr>
+                            {{ end }}
+                        </tbody>
+                    </table>
+                </div>
+        
+            </div>
+
+            <div class="container-fluid mt-5" id="tablaSimbolosSL">
+        
+                <div class="tabla-report">
+                    <center>
+                        <h1>
+                            <font color="#ffffff" face="Times New Roman">
+                                TABLA DE SIMBOLOS
+                            </font>
+                        </h1>
+                        
+                    </center>
+                    <table class="table table-dark table-hover shadow p-3 mb-5 bg-body rounded" id="tabla-reporte">
+                        <head>
+                            <tr>
+                                <th>Id</th>
+                                <th>Tipo Símbolo</th>
+                                <th>Tipo de Dato</th>
+                                <th>Ámbito</th>
+                                <th>Fila</th>
+                                <th>Columna</th>
+                            </tr>
+                        </head>
+
+                        <tbody>
+                           
+                        </tbody>
+                    </table>
+                </div>
+        
+            </div>
+
         </form>
     </body>
 </html>

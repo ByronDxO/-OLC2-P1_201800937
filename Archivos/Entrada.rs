@@ -1,3 +1,5 @@
+
+let a;
 fn main() {
     
     // println!(" ***************** Aritméticas *****************");
@@ -305,5 +307,5 @@ fn main() {
     print!("{ } -", letra);
     // Imprime O-L-C-2-
     }
-    println!("");
+    println!(a);
 }

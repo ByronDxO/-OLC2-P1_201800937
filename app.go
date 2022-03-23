@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	// "log"
-	// "reflect"
+	"reflect"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/html"
@@ -12,11 +12,13 @@ import (
 	"OLC2/Interprete/interfaces"
 	"OLC2/Interprete/environment"
 	"OLC2/Interprete/ast"
-	// "OLC2/Interprete/instruction"
+	"OLC2/Interprete/instruction"
 	"OLC2/Interprete/ANTLR/parser"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 )
 var CODE_OUT_ string = ""
+var tablaSimboloP []interface{}
+
 func main() {
 	// Declarate
 	
@@ -33,6 +35,7 @@ func main() {
 		return c.Render("index", fiber.Map{
 			"CODE_INPUT": "",
 			"CODE_OUT": "",
+			"Tabla_Error" : nil,
 		})
 	})
 
@@ -69,11 +72,13 @@ func Execute(c *fiber.Ctx) error {
 	result := NewTreeShapeListener()
 	antlr.ParseTreeWalkerDefault.Walk(result, tree)
 
-	// fmt.Println(CODE_OUT_)
+	fmt.Println("--")
+	// fmt.Println(tablaSimbolo)
 
 	return c.Render("index", fiber.Map{
-		"CODE_INPUT": data.Input,
-		"CODE_OUT": CODE_OUT_,
+		"CODE_INPUT"  : data.Input,
+		"CODE_OUT"	  : CODE_OUT_,
+		"Tabla_Error" : tablaSimboloP,
 	})
 }
 
@@ -102,31 +107,78 @@ func (this *TreeShapeListener) ExitStart(ctx *parser.StartContext) {
 	var globalEnv environment.Environment
 	globalEnv = environment.NewEnvironment(nil)
 	CODE_OUT_ ="";
+	var contMain int = 0
+
 	for _ , s := range result.ToArray() {
-		s.(interfaces.Instruction).Interpretar(globalEnv, tree)
+		newInstr := s.(interfaces.Instruction)
+		if reflect.TypeOf(newInstr).String() != "instruction.Main" { 
+			excep := ast.NewException("Semantico","Solo puede ir Main, Func, Array y Mod.", -1, -1)
+			tree.AddException(ast.Exception{Tipo:excep.Tipo, Descripcion: excep.Descripcion, Row: excep.Row, Column: excep.Row})
+			break
+		}
+	}
+	for _ , s := range result.ToArray() {
+
+		newInstr := s.(interfaces.Instruction)
+		
+		if reflect.TypeOf(newInstr).String() == "instruction.Main" {
+			if contMain > 0 {
+				excep := ast.NewException("Semantico","Existen dos funciones Main.", newInstr.(instruction.Main).Row, newInstr.(instruction.Main).Column)
+				tree.AddException(ast.Exception{Tipo:excep.Tipo, Descripcion: excep.Descripcion, Row: excep.Row, Column: excep.Row})
+				break
+			}
+			newInstr.Interpretar(globalEnv, tree)
+			
+			if reflect.TypeOf(newInstr).String() == "transferencia.Break" 	 { 
+				excep := ast.NewException("Semantico","Sentencia Break fuera de Ciclo.", newInstr.(instruction.Main).Row, newInstr.(instruction.Main).Column)
+				tree.AddException(ast.Exception{Tipo:excep.Tipo, Descripcion: excep.Descripcion, Row: excep.Row, Column: excep.Row})
+				break
+			}
+			if reflect.TypeOf(newInstr).String() == "transferencia.Continue" { 
+				excep := ast.NewException("Semantico","Sentencia Continue fuera de Ciclo.", newInstr.(instruction.Main).Row, newInstr.(instruction.Main).Column)
+				tree.AddException(ast.Exception{Tipo:excep.Tipo, Descripcion: excep.Descripcion, Row: excep.Row, Column: excep.Row})
+				break
+			}
+			if reflect.TypeOf(newInstr).String() == "transferencia.Return"   { 
+				excep := ast.NewException("Semantico","Sentencia Return fuera de Ciclo.", newInstr.(instruction.Main).Row, newInstr.(instruction.Main).Column)
+				tree.AddException(ast.Exception{Tipo:excep.Tipo, Descripcion: excep.Descripcion, Row: excep.Row, Column: excep.Row})
+				break
+			}
+			contMain++;
+		}
 		
 	}
 
 
-	fmt.Println("SALIDA")
+	fmt.Println(" ************* RESULTADO ************* ")
 	for _, s := range tree.GetCode().ToArray() {
 		_salida += fmt.Sprintf("%v", s)
 	}
 	fmt.Println(_salida)
 	fmt.Println("----------")
 
-	fmt.Println("EXCEPTION")
+	
 	var OutException string
 	OutException = ""
+
+	
+	fmt.Println(tablaSimboloP)
 	for _, s := range tree.GetException().ToArray() {
 		OutException += fmt.Sprintf("%v", s)
+		m := make(map[string]string)
+		m["Id"] 		 = fmt.Sprintf("%v", s.(ast.Exception).Tipo)
+		m["Descripcion"] = fmt.Sprintf("%v", s.(ast.Exception).Descripcion)
+		m["Row"] 		 = fmt.Sprintf("%v", s.(ast.Exception).Row)
+		m["Column"]      = fmt.Sprintf("%v", s.(ast.Exception).Column)
+		m["Time"] 		 = fmt.Sprintf("%v", s.(ast.Exception).Time)
+		
+		tablaSimboloP = append(tablaSimboloP, m) 
 	}
+
 	fmt.Println(OutException)
 	fmt.Println("----------")
 
 
 	CODE_OUT_ = _salida
 }
-
-
 

@@ -20,6 +20,8 @@ R_RETURN:       'return';
 R_LOOP:         'loop';
 R_FOR:          'for';
 R_IN:           'in';
+R_MAIN:         'main';
+R_FUNCTION:     'fn';
 
 /* TIPOS */
 R_INT:          'i64';

@@ -20,6 +20,9 @@ type ChemsListener interface {
 	// EnterInstruccion is called when entering the instruccion production.
 	EnterInstruccion(c *InstruccionContext)
 
+	// EnterInstr_main is called when entering the instr_main production.
+	EnterInstr_main(c *Instr_mainContext)
+
 	// EnterInstr_println is called when entering the instr_println production.
 	EnterInstr_println(c *Instr_printlnContext)
 
@@ -127,6 +130,9 @@ type ChemsListener interface {
 
 	// ExitInstruccion is called when exiting the instruccion production.
 	ExitInstruccion(c *InstruccionContext)
+
+	// ExitInstr_main is called when exiting the instr_main production.
+	ExitInstr_main(c *Instr_mainContext)
 
 	// ExitInstr_println is called when exiting the instr_println production.
 	ExitInstr_println(c *Instr_printlnContext)

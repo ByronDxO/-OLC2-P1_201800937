@@ -4,6 +4,8 @@ import (
 	// "OLC2/Interprete/environment"
 	// "fmt"
 	arrayList "github.com/colegno/arraylist"
+	"time"
+	"fmt"
 )
 
 type Arbol struct {
@@ -17,6 +19,7 @@ type Exception struct {
 	Descripcion string
 	Row			int
 	Column 		int
+	Time 		string
 }
 
 
@@ -26,7 +29,12 @@ func NewArbol() *Arbol {
 }
 
 func NewException(tipo string, descripcion string, row int, column int) *Exception {
-	e := Exception{Tipo: tipo, Descripcion: descripcion, Row: row, Column: column}
+	t := time.Now()
+	hora := fmt.Sprintf("%d-%02d-%02dT%02d:%02d:%02d",
+		t.Year(), t.Month(), t.Day(),
+		t.Hour(), t.Minute(), t.Second())
+	
+	e := Exception{Tipo: tipo, Descripcion: descripcion, Row: row, Column: column, Time: hora}
 	return &e
 }
 
@@ -42,6 +50,11 @@ func (a Arbol) GetCode() *arrayList.List {
 
 /* Add Exception */
 func (a *Arbol) AddException(e Exception) {
+	t := time.Now()
+	hora := fmt.Sprintf("%d/%02d/%02d %02d:%02d:%02d",
+		t.Day(), t.Month(), t.Year(), 
+		t.Hour(), t.Minute(), t.Second())
+	e.Time = hora
 	a._Exception.Add(e) 
 }
 

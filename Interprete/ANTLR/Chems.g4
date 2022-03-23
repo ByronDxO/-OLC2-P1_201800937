@@ -51,9 +51,14 @@ instruccion returns [interfaces.Instruction instr]
   | instr_break                   { $instr = $instr_break.instr         }
   | instr_continue                { $instr = $instr_continue.instr      }
   | instr_loop                    { $instr = $instr_loop.instr          }
-  | instr_for_in                  { $instr = $instr_for_in.instr          }
+  | instr_for_in                  { $instr = $instr_for_in.instr        }
+  | instr_main                    { $instr = $instr_main.instr          }
 ;
 
+
+instr_main returns [interfaces.Instruction instr]
+  : R_FUNCTION R_MAIN TK_PARA TK_PARC TK_LLAVEA instrucciones TK_LLAVEC       { $instr = instruction.NewMain($instrucciones.l, $R_MAIN.line, localctx.(*Instr_mainContext).Get_R_MAIN().GetColumn()) }
+;
 
 /******************************** [PRINTLN!] ********************************/
 instr_println returns [interfaces.Instruction instr]
