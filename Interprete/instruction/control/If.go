@@ -7,6 +7,7 @@ import (
 	"OLC2/Interprete/ast"
 	arrayList "github.com/colegno/arraylist"
 	"reflect"
+	// "fmt"
 )
 
 
@@ -87,8 +88,8 @@ func (p If) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 	} else {
 
 		excep := ast.NewException("Semantico","Tipo de Dato no Booleano en If.", p.Row, p.Row)
-		tree.AddException(ast.Exception{Tipo:"Semantico", Descripcion: "Tipo de Dato no Booleano en If.", Row: p.Row, Column: p.Row})
-		return interfaces.Symbol{Id: "", Tipo: interfaces.EXCEPTION, Valor: excep}
+		tree.AddException(ast.Exception{Tipo:excep.Tipo, Descripcion: excep.Descripcion, Row: excep.Row, Column: excep.Row})
+		return excep
 
 	}
 

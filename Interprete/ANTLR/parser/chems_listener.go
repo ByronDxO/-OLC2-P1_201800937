@@ -92,6 +92,9 @@ type ChemsListener interface {
 	// EnterInstr_loop_ternario is called when entering the instr_loop_ternario production.
 	EnterInstr_loop_ternario(c *Instr_loop_ternarioContext)
 
+	// EnterInstr_for_in is called when entering the instr_for_in production.
+	EnterInstr_for_in(c *Instr_for_inContext)
+
 	// EnterInstr_break is called when entering the instr_break production.
 	EnterInstr_break(c *Instr_breakContext)
 
@@ -196,6 +199,9 @@ type ChemsListener interface {
 
 	// ExitInstr_loop_ternario is called when exiting the instr_loop_ternario production.
 	ExitInstr_loop_ternario(c *Instr_loop_ternarioContext)
+
+	// ExitInstr_for_in is called when exiting the instr_for_in production.
+	ExitInstr_for_in(c *Instr_for_inContext)
 
 	// ExitInstr_break is called when exiting the instr_break production.
 	ExitInstr_break(c *Instr_breakContext)

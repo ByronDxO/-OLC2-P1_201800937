@@ -51,6 +51,7 @@ instruccion returns [interfaces.Instruction instr]
   | instr_break                   { $instr = $instr_break.instr         }
   | instr_continue                { $instr = $instr_continue.instr      }
   | instr_loop                    { $instr = $instr_loop.instr          }
+  | instr_for_in                  { $instr = $instr_for_in.instr          }
 ;
 
 
@@ -251,6 +252,12 @@ instr_loop returns [interfaces.Instruction instr]
 instr_loop_ternario returns [interfaces.Expresion instr]
   : R_LOOP TK_LLAVEA instrucciones TK_LLAVEC                           { $instr = loops.NewLoopTernario($instrucciones.l) }
 ;
+
+instr_for_in returns [interfaces.Instruction instr]
+  : R_FOR ID R_IN left=expression TK_DOBLEPUNTO right=expression TK_LLAVEA instrucciones TK_LLAVEC     { $instr = loops.NewFor($ID.text, interfaces.INTEGER, $left.p, $right.p, $instrucciones.l, nil, $R_FOR.line, localctx.(*Instr_for_inContext).Get_R_FOR().GetColumn()) }
+;
+
+
 
 /******************************** [TRANSFERENCIA][BREAK]    ********************************/
 instr_break returns [interfaces.Instruction instr]

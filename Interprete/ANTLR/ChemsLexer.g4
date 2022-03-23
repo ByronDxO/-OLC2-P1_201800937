@@ -18,6 +18,8 @@ R_BREAK:        'break';
 R_CONTINUE:     'continue';
 R_RETURN:       'return';
 R_LOOP:         'loop';
+R_FOR:          'for';
+R_IN:           'in';
 
 /* TIPOS */
 R_INT:          'i64';
@@ -38,7 +40,7 @@ ID: ([a-zA-Z_])[a-zA-Z0-9_]*;
 
 // R_FORMATO_LLAVE: '"'('{}')+'"';
 //  R_FORMATO_LLAVE: '"{}"';
-
+TK_DOBLEPUNTO:   '..';
 TK_PUNTO:        '.';
 TK_PUNTOCOMA:    ';';
 TK_COMA:         ',';
