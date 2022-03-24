@@ -1,5 +1,5 @@
 
-let a;
+
 fn main() {
     
     // println!(" ***************** Aritméticas *****************");
@@ -263,49 +263,61 @@ fn main() {
 
     */
     
-    let x = 5;
-    println!("{}", x);
-    let num_cadena = match x {
-        1 => "uno",
-        2 => "dos",
-        3 => "tres",
-        4 => "cuatro",
-        5 => (if x == 5 { "cinco" } else if x == 90 { "else if" } else { "else" }),
-        _ => "otra cosa",
+    // let x = 5;
+    // println!("{}", x);
+    // let num_cadena = match x {
+    //     1 => "uno",
+    //     2 => "dos",
+    //     3 => "tres",
+    //     4 => "cuatro",
+    //     5 => (if x == 5 { "cinco" } else if x == 90 { "else if" } else { "else" }),
+    //     _ => "otra cosa",
      
-    };
+    // };
 
 
-    println!("{}", num_cadena);
+    // println!("{}", num_cadena);
 
-    // Ejemplo 3
-    for n in 1..4 {
-    print!("{ } ", n);
-    }
-    println!("");
+    // // Ejemplo 3
+    // for n in 1..4 {
+    // print!("{ } ", n);
+    // }
+    // println!("");
 
-    // Ejemplo 3 - cadena
-    let ka: &str = "Hola Mundo!";
-    for letra in ka.bytes() { // Recorre las letras de la cadena
-    print!("{ } -", letra);
-    // Imprime H-o-l-a- -M-u-n-d-o-!-
-    }
-    println!("");
+    // // Ejemplo 3 - cadena
+    // let ka: &str = "Hola Mundo!";
+    // for letra in ka.bytes() { // Recorre las letras de la cadena
+    // print!("{ } -", letra);
+    // // Imprime H-o-l-a- -M-u-n-d-o-!-
+    // }
+    // println!("");
 
 
-    // Ejemplo 3
-    let z : i64 = 3*5;
-    println!("{}", z);
-    for z in 1..4 {
-        print!("{ } ", z);
-    }
-    println!("");
-    println!("{ } ", z);
+    // // Ejemplo 3
+    // let z : i64 = 3*5;
+    // println!("{}", z);
+    // for z in 1..4 {
+    //     print!("{ } ", z);
+    // }
+    // println!("");
+    // println!("{ } ", z);
 
-    let cadena = "OLC2";
-    for letra in cadena.chars() {
-    print!("{ } -", letra);
-    // Imprime O-L-C-2-
-    }
+    // let cadena = "OLC2";
+    // for letra in cadena.chars() {
+    // print!("{ } -", letra);
+    // // Imprime O-L-C-2-
+    // }
+    // println!(a);
+
+
+    let a: i64;
     println!(a);
+
+    // let b: f64;
+    // // println!(b);
+    // b = (5 as f64) + 3.4;
+    // // println!(c);
+    // let c: i64 = 2 + 3;
+    // println!(a);
+
 }

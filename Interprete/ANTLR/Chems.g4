@@ -76,9 +76,13 @@ instr_println returns [interfaces.Instruction instr]
 /******************************** [DECLARACION][VARIABLE] ********************************/
 instr_declaracion returns [interfaces.Instruction instr]
   : R_LET R_MUT ID TK_IGUAL expression TK_PUNTOCOMA                           { $instr = variable.NewDeclaration($ID.text, interfaces.NULL,      $expression.p, true, false, false,  $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
+  | R_LET R_MUT ID TK_DOSPUNTOS instr_tipo TK_PUNTOCOMA                       { $instr = variable.NewDeclaration($ID.text, $instr_tipo.tipo_exp, nil, true, false, false,  $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
   | R_LET R_MUT ID TK_DOSPUNTOS instr_tipo TK_IGUAL expression TK_PUNTOCOMA   { $instr = variable.NewDeclaration($ID.text, $instr_tipo.tipo_exp, $expression.p, true, false, false,  $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
+  
   | R_LET ID TK_IGUAL expression TK_PUNTOCOMA                                 { $instr = variable.NewDeclaration($ID.text, interfaces.NULL,      $expression.p, false, false, false, $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
+  | R_LET ID TK_DOSPUNTOS instr_tipo TK_PUNTOCOMA                             { $instr = variable.NewDeclaration($ID.text, $instr_tipo.tipo_exp, nil, false, false, false, $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
   | R_LET ID TK_DOSPUNTOS instr_tipo TK_IGUAL expression TK_PUNTOCOMA         { $instr = variable.NewDeclaration($ID.text, $instr_tipo.tipo_exp, $expression.p, false, false, false, $R_LET.line, localctx.(*Instr_declaracionContext).Get_R_LET().GetColumn()) }
+  
 ;
 
 

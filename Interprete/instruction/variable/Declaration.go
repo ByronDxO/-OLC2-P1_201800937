@@ -31,7 +31,7 @@ func (p Declaration) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 
 	/* ERROR */
 	var value string = ""
-
+	fmt.Println("estamos aca perro")
 	/* Buscar si el id ya existe */
 	symbol := env.(environment.Environment).GetSymbol(p.Id)
 
@@ -43,7 +43,13 @@ func (p Declaration) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 	}
 
 	var result interfaces.Symbol
-	result = p.Expresion.Interpretar(env, tree)
+	if p.Expresion != nil {
+		result = p.Expresion.Interpretar(env, tree)
+		p.Tipo = result.Tipo
+	}else{
+		fmt.Println("oye es declaracion vacia")
+		result.Tipo = p.Tipo
+	}
 
 	
 	if (result.Tipo == p.Tipo || p.Tipo == interfaces.NULL) {
