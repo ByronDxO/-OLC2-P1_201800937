@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"OLC2/Interprete/ast"
+	arrayList "github.com/colegno/arraylist"
 )
 
 type Symbol struct {
@@ -9,6 +10,14 @@ type Symbol struct {
 	Tipo  TipoExpresion
 	Valor interface{}
 	IsMut bool
+}
+
+type SymbolFunction struct {
+	Id    			string
+	Tipo  			TipoExpresion
+	Instrucciones	*arrayList.List
+	Parametro		*arrayList.List
+	IsMut	 		bool
 }
 
 type Exception struct {

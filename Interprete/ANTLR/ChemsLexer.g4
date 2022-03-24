@@ -52,6 +52,7 @@ TK_IGUAL:        '=';
 TK_IGUALIGUAL:   '==';
 TK_MAYORIGUAL:   '>=';
 TK_IGUALMAYOR:   '=>';
+TK_MENOSMAYOR:   '->';
 TK_MENORIGUAL:   '<=';
 TK_DIFIGUAL:     '!=';
 TK_MAYOR:        '>';

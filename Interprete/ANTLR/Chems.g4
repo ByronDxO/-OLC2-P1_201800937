@@ -15,6 +15,7 @@ options {
     import "OLC2/Interprete/instruction/control"
     import "OLC2/Interprete/instruction/loops"
     import "OLC2/Interprete/instruction/transferencia"
+    import "OLC2/Interprete/instruction/function"
     import arrayList "github.com/colegno/arraylist"
     
 }
@@ -50,9 +51,14 @@ instruccion returns [interfaces.Instruction instr]
   | instr_while                   { $instr = $instr_while.instr         }
   | instr_break                   { $instr = $instr_break.instr         }
   | instr_continue                { $instr = $instr_continue.instr      }
+  | instr_return                  { $instr = $instr_return.instr      }
   | instr_loop                    { $instr = $instr_loop.instr          }
   | instr_for_in                  { $instr = $instr_for_in.instr        }
   | instr_main                    { $instr = $instr_main.instr          }
+  | instr_func                    { $instr = $instr_func.instr          }
+  | instr_llamada end_instr       { $instr = $instr_llamada.instr       }
+
+  
 ;
 
 
@@ -283,6 +289,38 @@ instr_return returns [interfaces.Instruction instr]
   : R_RETURN expression end_instr                            { $instr = transferencia.NewReturn($expression.p, $R_RETURN.line, localctx.(*Instr_returnContext).Get_R_RETURN().GetColumn()) }
 ;
 
+instr_func returns [interfaces.Instruction instr]
+  : R_FUNCTION ID TK_PARA list_function_parameters TK_PARC TK_LLAVEA instrucciones TK_LLAVEC                              { $instr = function.NewFunction($ID.text, $list_function_parameters.l, $instrucciones.l, interfaces.NULL,      $R_FUNCTION.line, localctx.(*Instr_funcContext).Get_R_FUNCTION().GetColumn()) }
+  | R_FUNCTION ID TK_PARA list_function_parameters TK_PARC TK_MENOSMAYOR instr_tipo TK_LLAVEA instrucciones TK_LLAVEC     { $instr = function.NewFunction($ID.text, $list_function_parameters.l, $instrucciones.l, $instr_tipo.tipo_exp, $R_FUNCTION.line, localctx.(*Instr_funcContext).Get_R_FUNCTION().GetColumn()) }
+;
+
+list_function_parameters returns [*arrayList.List l]
+  @init{
+    $l =  arrayList.New()
+  }
+  : e += block_parameters_fn+  {
+        listInt := localctx.(*List_function_parametersContext).GetE()
+        for _, e := range listInt {
+            $l.Add(e.GetInstr())
+        }
+    }
+;
+
+
+block_parameters_fn returns [interfaces.Instruction instr]
+  : ID TK_DOSPUNTOS instr_tipo TK_COMA                    { $instr = function.NewListParam($ID.text, $instr_tipo.tipo_exp) }
+  | ID TK_DOSPUNTOS instr_tipo                            { $instr = function.NewListParam($ID.text, $instr_tipo.tipo_exp) }
+;
+
+
+instr_llamada returns [interfaces.Instruction instr]
+  : ID TK_PARA list_expression TK_PARC           { $instr = function.NewLlamada($ID.text, $list_expression.l, $ID.line, localctx.(*Instr_llamadaContext).Get_ID().GetColumn()) }
+;
+
+instr_llamada_expre returns [interfaces.Expresion instr]
+  : ID TK_PARA list_expression TK_PARC           { $instr = function.NewLlamadaExpre($ID.text, $list_expression.l, $ID.line, localctx.(*Instr_llamada_expreContext).Get_ID().GetColumn()) }
+;
+
 /******************************** [TIPO] ********************************/
 instr_tipo returns [interfaces.TipoExpresion tipo_exp]
   : R_INT       {$tipo_exp = interfaces.INTEGER}
@@ -372,5 +410,5 @@ primitivo returns[interfaces.Expresion p]
     | instr_ternario      {$p = $instr_ternario.p } 
     | instr_match_ter     {$p = $instr_match_ter.instr }
     | instr_loop_ternario {$p = $instr_loop_ternario.instr }
-    
+    | instr_llamada_expre {$p = $instr_llamada_expre.instr }
 ;

@@ -19,7 +19,6 @@ func NewReturn(espresion interfaces.Expresion, row int, column int) Return {
 
 
 func (p Return) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
-	var result interfaces.Symbol
-	result = p.Expresion.Interpretar(env, tree)
-	return result
+	
+	return p
 }

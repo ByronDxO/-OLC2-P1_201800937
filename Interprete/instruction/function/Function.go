@@ -1,31 +1,30 @@
-package instruction
-
+package function
 
 import (
-	"OLC2/Interprete/interfaces"
 	"OLC2/Interprete/environment"
+	"OLC2/Interprete/interfaces"
 	"OLC2/Interprete/ast"
 	arrayList "github.com/colegno/arraylist"
 	"reflect"
-	// "fmt"
-
 )
 
+type Function struct {
 
-type Main struct {
-	Instrucciones   *arrayList.List
-	Row 			int
+	Id 				string
+	Parametro 	    *arrayList.List
+	Instrucciones 	*arrayList.List
+	Tipo			interfaces.TipoExpresion
+	Row				int
 	Column			int
+
 }
 
-
-func NewMain(instrucciones *arrayList.List, row int, column int) Main {
-	instr := Main{instrucciones, row, column}
+func NewFunction(Id string, Parametro *arrayList.List, Instrucciones *arrayList.List, tipo interfaces.TipoExpresion, Row int, Column int) Function {
+	instr := Function{Id, Parametro, Instrucciones, tipo, Row, Column}
 	return instr
 }
 
-
-func (p Main) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
+func (p Function) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 
 	var newTable environment.Environment
 	newTable = environment.NewEnvironment(env.(environment.Environment))
@@ -48,12 +47,8 @@ func (p Main) Interpretar(env interface{}, tree *ast.Arbol) interface{} {
 				tree.AddException(ast.Exception{Tipo:excep.Tipo, Descripcion: excep.Descripcion, Row: excep.Row, Column: excep.Row})
 				return excep 
 			}
-
 			
 			s.(interfaces.Instruction).Interpretar(newTable, tree)
-			
-			
-			
 			
 			
 			

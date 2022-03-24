@@ -107,6 +107,21 @@ type ChemsListener interface {
 	// EnterInstr_return is called when entering the instr_return production.
 	EnterInstr_return(c *Instr_returnContext)
 
+	// EnterInstr_func is called when entering the instr_func production.
+	EnterInstr_func(c *Instr_funcContext)
+
+	// EnterList_function_parameters is called when entering the list_function_parameters production.
+	EnterList_function_parameters(c *List_function_parametersContext)
+
+	// EnterBlock_parameters_fn is called when entering the block_parameters_fn production.
+	EnterBlock_parameters_fn(c *Block_parameters_fnContext)
+
+	// EnterInstr_llamada is called when entering the instr_llamada production.
+	EnterInstr_llamada(c *Instr_llamadaContext)
+
+	// EnterInstr_llamada_expre is called when entering the instr_llamada_expre production.
+	EnterInstr_llamada_expre(c *Instr_llamada_expreContext)
+
 	// EnterInstr_tipo is called when entering the instr_tipo production.
 	EnterInstr_tipo(c *Instr_tipoContext)
 
@@ -223,6 +238,21 @@ type ChemsListener interface {
 
 	// ExitInstr_return is called when exiting the instr_return production.
 	ExitInstr_return(c *Instr_returnContext)
+
+	// ExitInstr_func is called when exiting the instr_func production.
+	ExitInstr_func(c *Instr_funcContext)
+
+	// ExitList_function_parameters is called when exiting the list_function_parameters production.
+	ExitList_function_parameters(c *List_function_parametersContext)
+
+	// ExitBlock_parameters_fn is called when exiting the block_parameters_fn production.
+	ExitBlock_parameters_fn(c *Block_parameters_fnContext)
+
+	// ExitInstr_llamada is called when exiting the instr_llamada production.
+	ExitInstr_llamada(c *Instr_llamadaContext)
+
+	// ExitInstr_llamada_expre is called when exiting the instr_llamada_expre production.
+	ExitInstr_llamada_expre(c *Instr_llamada_expreContext)
 
 	// ExitInstr_tipo is called when exiting the instr_tipo production.
 	ExitInstr_tipo(c *Instr_tipoContext)

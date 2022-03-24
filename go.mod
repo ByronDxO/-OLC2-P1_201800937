@@ -8,5 +8,6 @@ require (
 	github.com/gofiber/fiber v1.14.6 // indirect
 	github.com/gofiber/template v1.6.24 // indirect
 	github.com/klauspost/compress v1.15.0 // indirect
+	github.com/manucorporat/try v0.0.0-20170609134256-2a0c6b941d52
 	golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9 // indirect
 )

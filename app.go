@@ -13,6 +13,7 @@ import (
 	"OLC2/Interprete/environment"
 	"OLC2/Interprete/ast"
 	"OLC2/Interprete/instruction"
+	"OLC2/Interprete/instruction/function"
 	"OLC2/Interprete/ANTLR/parser"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 )
@@ -111,10 +112,41 @@ func (this *TreeShapeListener) ExitStart(ctx *parser.StartContext) {
 
 	for _ , s := range result.ToArray() {
 		newInstr := s.(interfaces.Instruction)
-		if reflect.TypeOf(newInstr).String() != "instruction.Main" { 
+		if reflect.TypeOf(newInstr).String() != "instruction.Main" && reflect.TypeOf(newInstr).String() != "function.Function" { 
 			excep := ast.NewException("Semantico","Solo puede ir Main, Func, Array y Mod.", -1, -1)
 			tree.AddException(ast.Exception{Tipo:excep.Tipo, Descripcion: excep.Descripcion, Row: excep.Row, Column: excep.Row})
 			break
+		}
+
+		if reflect.TypeOf(newInstr).String() == "function.Function" {
+			// fmt.Println("--- func ---")
+			// fmt.Println()
+			// fmt.Println(newInstr.(function.Function).Parametro)
+			// fmt.Println()
+			// fmt.Println()
+			// fmt.Println(newInstr.(function.Function).Row)
+			// fmt.Println(newInstr.(function.Function).Column)
+			// fmt.Println("--- *** ---")
+
+			value := interfaces.Symbol {
+				Id     : newInstr.(function.Function).Id,
+				Tipo   : newInstr.(function.Function).Tipo,
+				Valor  : interfaces.SymbolFunction {
+					
+					Id			    : newInstr.(function.Function).Id,
+					Tipo			: newInstr.(function.Function).Tipo,
+					Instrucciones	: newInstr.(function.Function).Instrucciones,
+					Parametro		: newInstr.(function.Function).Parametro,
+					IsMut			: true,
+						
+				},
+				IsMut  : true,
+			}
+
+
+
+			globalEnv.AddFunction(newInstr.(function.Function).Id, value, newInstr.(function.Function).Tipo)
+			// AddSymbol(id, value interfaces.Symbol, tipo interfaces.TipoExpresion) {
 		}
 	}
 	for _ , s := range result.ToArray() {
